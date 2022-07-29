@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:project_stock/Screens/Welcome/components/shapespainter.dart';
+
 class Background extends StatelessWidget {
   final Widget child;
   const Background({
@@ -17,11 +19,11 @@ class Background extends StatelessWidget {
         children: [
           Positioned(
             top: 0, // all top position is 0
-            left: 0, // all left position is 0
-            child: Image.asset(
-              "assets/images/main_top.png",
-              width: size.width * 0.3,
-            ), //image semi circle
+            child: CustomPaint(
+              painter: ShapesPainter(),
+              size: Size(size.height, size.width-100),
+              // child: Container(height: 300),
+            ),
           ),
           Positioned(
             bottom: 0, // all top position is 0
