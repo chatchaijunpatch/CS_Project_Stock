@@ -94,3 +94,10 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+  fonts:
+    - family: LEMON
+      fonts:
+        - asset: font/Lemon-Regular.ttf
+    - family: LEMONMILK
+      fonts:
+        - asset: font/LEMONMILK-Regular.otf
