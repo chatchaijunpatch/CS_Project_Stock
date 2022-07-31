@@ -5,9 +5,11 @@ import 'package:project_stock/constants.dart';
 
 class TextFieldContainer extends StatelessWidget {
   final Widget child;
+  final Color color;
   const TextFieldContainer({
+
     required this.child,
-    Key? key,
+    Key? key, required this.color,
   }) : super(key: key);
 
   @override
@@ -18,7 +20,7 @@ class TextFieldContainer extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       width: size.width * 0.8,
       decoration: BoxDecoration(
-          color: kprimaryLightColor, borderRadius: BorderRadius.circular(29)),
+          color: color, borderRadius: BorderRadius.circular(29)),
       child: child,
     );
   }

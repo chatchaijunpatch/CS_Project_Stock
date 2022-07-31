@@ -1,3 +1,5 @@
+// ignore_for_file: sort_child_properties_last
+
 import 'package:flutter/material.dart';
 import 'package:project_stock/components/text_field_container.dart';
 import 'package:project_stock/constants.dart';
@@ -28,12 +30,13 @@ class RoundedInputField extends StatelessWidget {
         decoration: InputDecoration(
             icon: Icon(
               iconData,
-              color: kPrimaryColor,
+              color: brownSecondaryColor,
             ),
             hintText: hintText,
             suffixIcon: icon,
             border: InputBorder.none),
       ),
+      color: color,
     );
   }
 }

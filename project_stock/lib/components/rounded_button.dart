@@ -4,12 +4,13 @@ class RoundedButton extends StatelessWidget {
   final String text;
   final VoidCallback  press;
   final Color color, textColor;
+  final double fontSize;
   const RoundedButton({
     Key? key,
     required this.text,
     required this.press,
     this.color = kPrimaryColor,
-    this.textColor = Colors.white,
+    this.textColor = Colors.white, this.fontSize = 20,
   }) : super(key: key);
 
   @override
@@ -17,7 +18,7 @@ class RoundedButton extends StatelessWidget {
     Size size = MediaQuery.of(context).size;
     return Container(
       margin: EdgeInsets.symmetric(vertical: 10),
-      width: size.width-200 * 0.8,
+      width: size.width-300 * 0.8,
       child: ClipRRect(
         borderRadius: BorderRadius.circular(29),
         child: FlatButton(
@@ -27,7 +28,7 @@ class RoundedButton extends StatelessWidget {
           // ignore: prefer_const_constructors
           child: Text(
             text,
-            style: TextStyle(color: textColor,fontFamily: "LEMONMILK"),
+            style: TextStyle(color: textColor,fontFamily: "LEMONMILK",fontSize: fontSize),
           ),
         ),
       ),
