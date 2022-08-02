@@ -22,17 +22,34 @@ class Body extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            "LOGIN",
-            style: TextStyle(fontWeight: FontWeight.bold),
+           SizedBox(
+            height: size.height *0.25,
           ),
+            Text(
+                "STOCKIE",
+                style: TextStyle(fontWeight: FontWeight.bold,
+                fontFamily: "LEMON",
+                color: whitePrimaryColor,
+                fontSize: 50),
+                textAlign: TextAlign.center,
+
+              ),
           SizedBox(
-            height: size.height * 0.03,
+            height: size.height *0.15,
           ),
-          SvgPicture.asset(
-            "assets/icons/login.svg",
-            height: size.height * 0.35,
-          ),
+          // SvgPicture.asset(
+          //   "assets/icons/login.svg",
+          //   height: size.height * 0.35,
+          // ),
+            Text(
+                "LOG IN",
+                // ignore: prefer_const_constructors
+                style: TextStyle(fontWeight: FontWeight.bold,
+                 fontFamily: "LEMONMILK",color: browntext,
+                 fontSize: 30),
+                textAlign: TextAlign.center
+              ),
+              
           SizedBox(
             height: size.height * 0.03,
           ),
@@ -40,24 +57,26 @@ class Body extends StatelessWidget {
             hintText: "Your Email",
             onChanged: (value) {},
             iconData: Icons.person,
-            color: kprimaryLightColor,
+            color: brownPrimaryColor,
             icon: Icon(null),
             booleanstate: false,
           ),
           RoundedInputField(
-            hintText: "",
+            hintText: "Password",
             booleanstate: true,
-            color: kprimaryLightColor,
+            color: brownPrimaryColor,
             onChanged: (value) {},
             iconData: Icons.lock,
             icon: Icon(
               Icons.visibility,
-              color: kPrimaryColor,
+              color: brownSecondaryColor,
             ),
           ),
           RoundedButton(
-            text: "LOGIN",
+            text: "LOG IN NOW",
             press: () {},
+            color: brownSecondaryColor,
+            fontSize: 20,
           ),
           SizedBox(
             height: size.height * 0.03,

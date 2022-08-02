@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:project_stock/Screens/Welcome/components/shapespainter.dart';
+// import 'package:project_stock/Screens/Welcome/components/shapespainter.dart';
 import 'package:project_stock/constants.dart';
 
 
