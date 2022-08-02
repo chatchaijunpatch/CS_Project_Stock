@@ -6,34 +6,28 @@ import 'package:project_stock/constants.dart';
 
 class RoundedInputField extends StatelessWidget {
   final String hintText;
-  final IconData iconData;
-  final bool booleanstate;
+  final Icon lefticon;
+  final Icon righticon;
   final Color color;
-  final Icon icon;
   final ValueChanged<String> onChanged;
   const RoundedInputField({
     Key? key,
     required this.hintText,
-    required this.iconData,
     required this.color,
     required this.onChanged,
-    required this.icon,
-    required this.booleanstate,
+    required this.lefticon,
+    required this.righticon,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextField(
-        obscureText: booleanstate,
         onChanged: onChanged,
         decoration: InputDecoration(
-            icon: Icon(
-              iconData,
-              color: brownSecondaryColor,
-            ),
+            icon: lefticon,
             hintText: hintText,
-            suffixIcon: icon,
+            suffixIcon: righticon,
             border: InputBorder.none),
       ),
       color: color,

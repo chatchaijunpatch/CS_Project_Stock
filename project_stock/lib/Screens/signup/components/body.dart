@@ -1,14 +1,12 @@
-// ignore_for_file: prefer_const_constructors
-
 import 'package:flutter/material.dart';
 import 'package:project_stock/Screens/login/components/background.dart';
-import 'package:project_stock/components/rounded_button.dart';
-import 'package:project_stock/constants.dart';
+import 'package:project_stock/Screens/login/login_screen.dart';
 
 import '../../../components/already_have_account.dart';
+import '../../../components/rounded_button.dart';
 import '../../../components/rounded_password_field.dart';
 import '../../../components/rounded_input_field.dart';
-import '../../signup/signup_screen.dart';
+import '../../../constants.dart';
 
 class Body extends StatelessWidget {
   const Body({
@@ -42,7 +40,7 @@ class Body extends StatelessWidget {
           //   "assets/icons/login.svg",
           //   height: size.height * 0.35,
           // ),
-          Text("LOG IN",
+          Text("Welcome !",
               // ignore: prefer_const_constructors
               style: TextStyle(
                   fontWeight: FontWeight.bold,
@@ -55,7 +53,7 @@ class Body extends StatelessWidget {
             height: size.height * 0.03,
           ),
           RoundedInputField(
-            hintText: "Email or Username",
+            hintText: "Full name",
             onChanged: (value) {},
             lefticon: Icon(
               Icons.person,
@@ -64,7 +62,18 @@ class Body extends StatelessWidget {
             color: brownPrimaryColor,
             righticon: Icon(null),
           ),
-         PasswordField(
+          RoundedInputField(
+            hintText: "Email",
+            onChanged: (value) {},
+            lefticon: Icon(
+              Icons.person,
+              color: brownSecondaryColor,
+            ),
+            color: brownPrimaryColor,
+            righticon: Icon(null),
+          ),
+
+          PasswordField(
             hintText: "Password",
             booleanstate: true,
             color: brownPrimaryColor,
@@ -78,6 +87,22 @@ class Body extends StatelessWidget {
               color: brownSecondaryColor,
             ),
           ),
+
+          PasswordField(
+            hintText: "Confirm Password",
+            booleanstate: true,
+            color: brownPrimaryColor,
+            onChanged: (value) {},
+            lefticon: Icon(
+              Icons.lock,
+              color: brownSecondaryColor,
+            ),
+            righticon: Icon(
+              Icons.visibility,
+              color: brownSecondaryColor,
+            ),
+          ),
+
           RoundedButton(
             text: "LOG IN NOW",
             press: () {},
@@ -93,11 +118,12 @@ class Body extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) {
-                    return (SignUpScreen());
+                    return (LoginScreen());
                   },
                 ),
               );
             },
+            login: false,
           ),
           SizedBox(
             height: size.height * 0.03,

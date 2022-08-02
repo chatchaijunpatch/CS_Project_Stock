@@ -19,8 +19,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
           ),
-      // home: SplashPage(duration:5,goToPage:WelcomeScreen()),
-      home: LoginScreen(),
+      home:  SplashPage(duration:5,goToPage:WelcomeScreen()),
+      // home: LoginScreen(),
     );
   }
 }

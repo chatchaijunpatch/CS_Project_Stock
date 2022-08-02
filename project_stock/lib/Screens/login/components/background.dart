@@ -24,7 +24,7 @@ class Background extends StatelessWidget {
             top: 0, // all top position is 0
             child: CustomPaint(
               painter: ShapesPainter(),
-              size: Size(size.height, size.width-150),
+              size: Size(size.height, size.width),
             ),
           ),
           // Positioned(

@@ -4,7 +4,7 @@ import '../constants.dart';
 
 class AlreadyHaveAccount extends StatelessWidget {
   final bool login;
-  final Function press;
+  final VoidCallback press;
   const AlreadyHaveAccount({
     Key? key,
     this.login = true,
@@ -22,7 +22,7 @@ class AlreadyHaveAccount extends StatelessWidget {
           style: TextStyle(color: browntext),
         ),
         GestureDetector(
-          onTap: () {},
+          onTap: press,
           child: Text(
             login ? "Sign UP" : "Sign IN",
             style: TextStyle(color: browntext, fontWeight: FontWeight.bold),
