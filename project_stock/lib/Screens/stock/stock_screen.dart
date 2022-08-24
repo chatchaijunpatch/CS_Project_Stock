@@ -2,7 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project_stock/Screens/signup/components/body.dart';
 
-class SignUpScreen extends StatelessWidget {
+class StockPage extends StatelessWidget {
   final Future<FirebaseApp> firebase = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
@@ -22,7 +22,7 @@ class SignUpScreen extends StatelessWidget {
           }
           if (snapshot.connectionState == ConnectionState.done) {
             return Scaffold(
-              body: Body(),
+              body: Container(),
             );
           }
           return Scaffold(

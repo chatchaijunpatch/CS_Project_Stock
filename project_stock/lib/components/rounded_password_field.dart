@@ -12,6 +12,8 @@ class PasswordField extends StatefulWidget {
   final Color color;
   final Icon lefticon;
   final Icon righticon;
+ final String? Function(String?)? validate;
+
   final ValueChanged<String> onChanged;
   const PasswordField({
     Key? key,
@@ -20,13 +22,14 @@ class PasswordField extends StatefulWidget {
     required this.onChanged,
     required this.righticon,
     required this.booleanstate,
-    required this.lefticon,
+    required this.lefticon, 
+    this.validate,
   }) : super(key: key);
   @override
   _PasswordField createState() => _PasswordField();
   @override
   void initState() {
-    obscureText = booleanstate;
+    obscureText = !booleanstate;
   }
 }
 
@@ -34,7 +37,8 @@ class _PasswordField extends State<PasswordField> {
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
-      child: TextField(
+      child: TextFormField(
+        validator: widget.validate,
         obscureText: obscureText, //เป็นรูปแบบ password visible
         onChanged: widget.onChanged,
         decoration: InputDecoration(
@@ -49,7 +53,7 @@ class _PasswordField extends State<PasswordField> {
                 });
               },
               child: obscureText
-                  ? const Icon(
+                  ?const Icon(
                       Icons.visibility_off,
                       color: brownSecondaryColor,
                     )

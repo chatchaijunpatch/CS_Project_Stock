@@ -30,10 +30,18 @@ dependencies:
   flutter:
     sdk: flutter
   path_provider: ^2.0.11
-  firebase_core: ^1.13.1
+  http: ^0.13.3
+  form_field_validator: ^1.1.0
+  firebase_core: ^1.20.1
+  cloud_firestore: ^3.4.5
+  file_picker: ^5.0.1
+  firebase_storage: ^10.3.6
   firebase_messaging: ^11.2.8
   flutter_local_notifications: ^9.3.3
-  http: ^0.13.3
+  permission_handler: ^10.0.0
+  firebase_auth: ^3.6.4
+  firebase_database: ^9.1.2
+  fluttertoast: ^8.0.9
 
 
 
