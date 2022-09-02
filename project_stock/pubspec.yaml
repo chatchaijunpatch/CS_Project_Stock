@@ -109,3 +109,6 @@ flutter:
     - family: LEMONMILK
       fonts:
         - asset: font/LEMONMILK-Regular.otf
+    - family: LEMONMILKBOLD
+      fonts:
+        - asset: font/LEMONMILK-Bold.otf

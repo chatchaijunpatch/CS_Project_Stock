@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:project_stock/Screens/login/components/background.dart';
 import 'package:project_stock/Screens/login/login_screen.dart';
+import 'package:project_stock/Service/service.dart';
 import 'package:project_stock/storage/user.dart';
 
 import '../../../components/already_have_account.dart';
@@ -11,6 +12,8 @@ import '../../../components/rounded_button.dart';
 import '../../../components/rounded_password_field.dart';
 import '../../../components/rounded_input_field.dart';
 import '../../../constants.dart';
+
+String pwd = '';
 
 class Body extends StatelessWidget {
   // final formKey = GlobalKey<FormState>();
@@ -22,6 +25,7 @@ class Body extends StatelessWidget {
   Widget build(BuildContext context) {
     UserProfile profile = UserProfile();
     final formKey = GlobalKey<FormState>();
+
     Size size = MediaQuery.of(context).size;
     return Background(
         child: Form(
@@ -61,20 +65,20 @@ class Body extends StatelessWidget {
             SizedBox(
               height: size.height * 0.03,
             ),
-            // RoundedInputField(
-            //   hintText: "Username",
-            //   validate: RequiredValidator(errorText: "กรุณาป้อน Username"),
-            //   onChanged: (String? name) {
-            //     profile.name = name!;
-            //   },
-            //   lefticon: Icon(
-            //     Icons.person,
-            //     color: brownSecondaryColor,
-            //   ),
-            //   color: brownPrimaryColor,
-            //   righticon: Icon(null),
-            //   textInputType: TextInputType.name,
-            // ),
+            RoundedInputField(
+              hintText: "Username",
+              validate: RequiredValidator(errorText: "กรุณาป้อน Username"),
+              onChanged: (String? username) {
+                profile.username = username!;
+              },
+              lefticon: Icon(
+                Icons.person,
+                color: brownSecondaryColor,
+              ),
+              color: brownPrimaryColor,
+              righticon: Icon(null),
+              textInputType: TextInputType.name,
+            ),
             RoundedInputField(
               validate: MultiValidator([
                 RequiredValidator(errorText: "กรุณาป้อน Email"),
@@ -116,7 +120,9 @@ class Body extends StatelessWidget {
               validate: RequiredValidator(errorText: "กรุณาป้อน Password"),
               booleanstate: true,
               color: brownPrimaryColor,
-              onChanged: (value) {},
+              onChanged: (String? pwdd) {
+                pwd = pwdd!;
+              },
               lefticon: Icon(
                 Icons.lock,
                 color: brownSecondaryColor,
@@ -132,34 +138,42 @@ class Body extends StatelessWidget {
               press: () async {
                 if (formKey.currentState!.validate()) {
                   formKey.currentState!.save();
-                  try {
-                    await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                            email: profile.email, password: profile.password)
-                        .then((value) => {
-                              formKey.currentState!.reset(),
-                              Fluttertoast.showToast(
-                                  msg: "สร้างบัญชีผู้ใช้เรียบร้อยแล้ว",
-                                  gravity: ToastGravity.CENTER),
-                              Navigator.pushReplacement(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return LoginScreen();
-                              })),
-                            });
-                  } on FirebaseAuthException catch (e) {
-                    String message;
-                    print(e.code);
-                    if (e.code == "email-already-in-use") {
-                      message = 'มีอีเมลนี้ในระบบแล้วครับ โปรดใช้อีเมลอื่นแทน';
-                    } else if (e.code == 'weak-password') {
-                      message = "รหัสผ่านต้องมีความยาว 6 ตัวอักษรขึ้นไป";
-                    } else {
-                      message = e.message!;
-                    }
-                    Fluttertoast.showToast(
-                        msg: message, gravity: ToastGravity.CENTER);
+                  if (profile.password == pwd) {
+                    try {
+                      await FirebaseAuth.instance
+                          .createUserWithEmailAndPassword(
+                              email: profile.email.toString(), password: profile.password.toString())
+                          .then((value) => {
+                                DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid).CreateProfile(profile),
+                                formKey.currentState!.reset(),
+                                Fluttertoast.showToast(
+                                    msg: "สร้างบัญชีผู้ใช้เรียบร้อยแล้ว",
+                                    gravity: ToastGravity.CENTER),
+                                Navigator.pushReplacement(context,
+                                    MaterialPageRoute(builder: (context) {
+                                  return LoginScreen();
+                                })),
+                              });
+                    } on FirebaseAuthException catch (e) {
+                      String message;
+                      print(e.code);
+                      if (e.code == "email-already-in-use") {
+                        message =
+                            'มีอีเมลนี้ในระบบแล้วครับ โปรดใช้อีเมลอื่นแทน';
+                      } else if (e.code == 'weak-password') {
+                        message = "รหัสผ่านต้องมีความยาว 6 ตัวอักษรขึ้นไป";
+                      } else {
+                        message = e.message!;
+                      }
+                      Fluttertoast.showToast(
+                          msg: message, gravity: ToastGravity.CENTER);
 
-                    print(e.message);
+                      print(e.message);
+                    }
+                  } else {
+                    print(pwd);
+                    Fluttertoast.showToast(
+                        msg: "รหัสผ่านไม่ตรงกัน", gravity: ToastGravity.CENTER);
                   }
                 }
               },

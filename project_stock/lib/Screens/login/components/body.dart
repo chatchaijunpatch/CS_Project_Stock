@@ -13,6 +13,7 @@ import '../../../components/already_have_account.dart';
 import '../../../components/rounded_password_field.dart';
 import '../../../components/rounded_input_field.dart';
 import '../../../storage/user.dart';
+import '../../bottomnavigator/bottomnav_screen.dart';
 import '../../signup/signup_screen.dart';
 
 class Body extends StatelessWidget {
@@ -103,17 +104,21 @@ class Body extends StatelessWidget {
                 if (formKey.currentState!.validate()) {
                   formKey.currentState!.save();
                   try {
+                    print(profile.email);
+                    print(profile.password);
+                    
                     await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
-                            email: profile.email, password: profile.password)
+                            email: profile.email.toString(), password: profile.password.toString())
                         .then((value) {
                       formKey.currentState!.reset();
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) {
-                        return StockPage();
+                        return MainScreen();
                       }));
                     });
                   } on FirebaseAuthException catch (e) {
+                    
                     Fluttertoast.showToast(
                         msg: e.message!, gravity: ToastGravity.CENTER);
 
