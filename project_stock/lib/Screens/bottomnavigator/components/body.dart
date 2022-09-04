@@ -94,7 +94,7 @@ class _BodyState extends State<Body> {
           actions: [
             IconButton(
                 onPressed: () {
-                  DatabaseService(uid: auth.currentUser!.uid).signout();
+                  DatabaseService().signout();
                    Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
                 icon: Icon(

@@ -6,20 +6,21 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:project_stock/storage/user.dart';
 
 class DatabaseService {
-  final String uid;
-  DatabaseService({required this.uid});
+  final current = FirebaseAuth.instance.currentUser;
+  // final String uid;
+  DatabaseService();
   final CollectionReference _UserColletion =
       FirebaseFirestore.instance.collection("users");
   final FirebaseAuth auth = FirebaseAuth.instance;
 
   Future<void> CreateProfile(UserProfile user) async {
-    await _UserColletion.doc(this.uid).set({
+    await _UserColletion.doc(current!.uid).set({
       'email': user.email,
       'username': user.username,
     });
   }
 
-  Future<void> signout() async{
+  Future<void> signout() async {
     await auth.signOut();
   }
 
@@ -28,7 +29,7 @@ class DatabaseService {
     try {
       final snapshot = await FirebaseFirestore.instance
           .collection("users")
-          .doc(this.uid)
+          .doc(current!.uid)
           .get()
           .then((value) {
         profile = UserProfile.fromSnapshot(value);

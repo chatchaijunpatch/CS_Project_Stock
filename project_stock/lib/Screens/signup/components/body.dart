@@ -144,7 +144,7 @@ class Body extends StatelessWidget {
                           .createUserWithEmailAndPassword(
                               email: profile.email.toString(), password: profile.password.toString())
                           .then((value) => {
-                                DatabaseService(uid: FirebaseAuth.instance.currentUser!.uid).CreateProfile(profile),
+                                DatabaseService().CreateProfile(profile),
                                 formKey.currentState!.reset(),
                                 Fluttertoast.showToast(
                                     msg: "สร้างบัญชีผู้ใช้เรียบร้อยแล้ว",

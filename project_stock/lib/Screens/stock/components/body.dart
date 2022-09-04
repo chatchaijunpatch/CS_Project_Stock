@@ -5,7 +5,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:project_stock/Service/service.dart';
+import 'package:project_stock/components/hero_dialog_route.dart';
 import 'package:project_stock/storage/user.dart';
+import 'package:project_stock/Screens/stock/components/add_product.dart';
+
+import 'cust_react_tween.dart';
 
 class Body extends StatefulWidget {
   Body({Key? key}) : super(key: key);
@@ -23,8 +27,7 @@ class _BodyState extends State<Body> {
   }
 
   fetchDatabaseList() async {
-    String resultable =
-        await DatabaseService(uid: auth.currentUser!.uid).CallUserName();
+    String resultable = await DatabaseService().CallUserName();
     setState(() {
       profile.username = resultable;
       print(profile.username);
@@ -38,8 +41,19 @@ class _BodyState extends State<Body> {
       body: Column(
         children: [
           Text(auth.currentUser?.email ?? "User"),
-          Text(profile.username!)
+          Text(profile.username!),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.of(context).push(HeroDialogRoute(
+            builder: (context) {
+              return  AddProductPopupCard();
+            },
+          ));
+        },
+        child: Text("+"),
+        backgroundColor: Colors.red,
       ),
     );
   }
