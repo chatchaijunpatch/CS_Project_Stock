@@ -9,11 +9,15 @@ import 'package:project_stock/constants.dart';
 
 String _heroAddTodo = 'add-todo-hero';
 
-class AddProductPopupCard extends StatelessWidget {
-  /// {@macro add_todo_popup_card}
-  ///
-  const AddProductPopupCard({Key? key}) : super(key: key);
+class AddProductPopupCard extends StatefulWidget {
+  AddProductPopupCard({Key? key}) : super(key: key);
 
+  @override
+  State<AddProductPopupCard> createState() => _AddProductPopupCardState();
+}
+
+class _AddProductPopupCardState extends State<AddProductPopupCard> {
+  var pathimg = "";
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -37,37 +41,50 @@ class AddProductPopupCard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Center(
-                        child: ElevatedButton(
-                            onPressed: () async {
-                              final results = await FilePicker.platform
-                                  .pickFiles(
-                                      allowMultiple: false,
-                                      type: FileType.custom,
-                                      allowedExtensions: ['png', 'jpg']);
-                              if (results == null) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("No file select"),
-                                  ),
-                                );
-                                return null;
-                              }
-                              final path = results.files.single.path!;
-                              final fileName = results.files.single.name;
-                              // myStudent.storage.fileName = fileName;
-                              // myStudent.storage.filePath = path;
-                              //  myStudent.storage.filePath = path;
+                          child: ElevatedButton(
+                        onPressed: () async {
+                          final results = await FilePicker.platform.pickFiles(
+                              allowMultiple: false,
+                              type: FileType.custom,
+                              allowedExtensions: ['png', 'jpg']);
+                          if (results == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("No file select"),
+                              ),
+                            );
+                            return null;
+                          }
+                          final path = results.files.single.path!;
+                          final fileName = results.files.single.name;
+                          // myStudent.storage.fileName = fileName;
+                          // myStudent.storage.filePath = path;
+                          //  myStudent.storage.filePath = path;
 
-                              // setState(() {
-                              //   pathimg = path;
-                              // });
-                              // storage.uploadFile(path,fileName).then((value) => print("Done"),);
-                              // print(path);
-                              // print(fileName);
-                              // print(myStudent.storage.filePath+"/"+myStudent.storage.fileName);
-                            },
-                            child: Image(image: AssetImage('assets/photo.png'),)),
-                      ),
+                          setState(() {
+                            pathimg = path;
+                          });
+                          // storage.uploadFile(path,fileName).then((value) => print("Done"),);
+                          // print(fileName);
+                          // print(myStudent.storage.filePath+"/"+myStudent.storage.fileName);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.transparent
+                        ),
+                        child: Image.file(
+                          File(pathimg),
+                          width: 200,
+                          height: 200,
+                          errorBuilder: ((context, error, stackTrace) {
+                            print(pathimg);
+                            return Image(
+                              image: AssetImage("assets/photo.png"),
+                              width: 200,
+                              height: 200,
+                            );
+                          }),
+                        ),
+                      )),
                       // Center(
                       //   child: Image.file(File(pathimg),
                       //       width: 200, height: 200, errorBuilder: (
