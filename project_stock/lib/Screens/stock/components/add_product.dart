@@ -6,6 +6,9 @@ import 'package:flutter/widgets.dart';
 import 'package:project_stock/Screens/stock/components/cust_react_tween.dart';
 import 'package:project_stock/components/text_field_container.dart';
 import 'package:project_stock/constants.dart';
+import 'package:project_stock/storage/user.dart';
+
+import '../../../Service/service.dart';
 
 String _heroAddTodo = 'add-todo-hero';
 
@@ -16,7 +19,24 @@ class AddProductPopupCard extends StatefulWidget {
   State<AddProductPopupCard> createState() => _AddProductPopupCardState();
 }
 
+UserProfile profile = UserProfile();
+
 class _AddProductPopupCardState extends State<AddProductPopupCard> {
+  final formkey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    fetchDatabaseList();
+  }
+
+  fetchDatabaseList() async {
+    UserProfile resultable = await DatabaseService().CallProfile();
+    setState(() {
+      profile = resultable;
+      // print(profile.username);
+    });
+  }
+
   var pathimg = "";
   @override
   Widget build(BuildContext context) {
@@ -37,54 +57,62 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Form(
+                  key: formkey,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Center(
-                          child: ElevatedButton(
-                        onPressed: () async {
-                          final results = await FilePicker.platform.pickFiles(
-                              allowMultiple: false,
-                              type: FileType.custom,
-                              allowedExtensions: ['png', 'jpg']);
-                          if (results == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("No file select"),
-                              ),
-                            );
-                            return null;
-                          }
-                          final path = results.files.single.path!;
-                          final fileName = results.files.single.name;
-                          // myStudent.storage.fileName = fileName;
-                          // myStudent.storage.filePath = path;
-                          //  myStudent.storage.filePath = path;
+                        child: Material(
+                          // color: Colors.blue,
+                          // elevation: 8,
+                          // borderRadius: BorderRadius.circular(28),
+                          // clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: InkWell(
+                            onTap: () async {
+                              final results = await FilePicker.platform
+                                  .pickFiles(
+                                      allowMultiple: false,
+                                      type: FileType.custom,
+                                      allowedExtensions: ['png', 'jpg']);
+                              if (results == null) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("No file select"),
+                                  ),
+                                );
+                                return null;
+                              }
+                              final path = results.files.single.path!;
+                              final fileName = results.files.single.name;
+                              // myStudent.storage.fileName = fileName;
+                              // myStudent.storage.filePath = path;
+                              //  myStudent.storage.filePath = path;
 
-                          setState(() {
-                            pathimg = path;
-                          });
-                          // storage.uploadFile(path,fileName).then((value) => print("Done"),);
-                          // print(fileName);
-                          // print(myStudent.storage.filePath+"/"+myStudent.storage.fileName);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.transparent
+                              setState(() {
+                                pathimg = path;
+                                profile.product.filename = fileName;
+                                profile.product.filepath = path;
+                              });
+                              // storage.uploadFile(path,fileName).then((value) => print("Done"),);
+                              // print(fileName);
+                              // print(myStudent.storage.filePath+"/"+myStudent.storage.fileName);
+                            },
+                            child: Image.file(
+                              File(pathimg),
+                              width: 250,
+                              height: 250,
+                              errorBuilder: ((context, error, stackTrace) {
+                                print(pathimg);
+                                return Image(
+                                  image: AssetImage("assets/photo.png"),
+                                  width: 250,
+                                  height: 250,
+                                );
+                              }),
+                            ),
+                          ),
                         ),
-                        child: Image.file(
-                          File(pathimg),
-                          width: 200,
-                          height: 200,
-                          errorBuilder: ((context, error, stackTrace) {
-                            print(pathimg);
-                            return Image(
-                              image: AssetImage("assets/photo.png"),
-                              width: 200,
-                              height: 200,
-                            );
-                          }),
-                        ),
-                      )),
+                      ),
                       // Center(
                       //   child: Image.file(File(pathimg),
                       //       width: 200, height: 200, errorBuilder: (
@@ -115,6 +143,9 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                             border: InputBorder.none,
                           ),
                           cursorColor: Colors.white,
+                          onSaved: (String? productname) {
+                            profile.product.productname = productname;
+                          },
                         ),
                       ),
                       TextFieldContainer(
@@ -125,6 +156,9 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                             border: InputBorder.none,
                           ),
                           cursorColor: Colors.white,
+                          onSaved: (String? description) {
+                            profile.product.description = description;
+                          },
                         ),
                       ),
                       TextFieldContainer(
@@ -135,6 +169,35 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                             border: InputBorder.none,
                           ),
                           cursorColor: Colors.white,
+                          onSaved: (String? stock) {
+                            profile.product.stock = stock;
+                          },
+                        ),
+                      ),
+                      TextFieldContainer(
+                        color: whitePrimaryColor,
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            hintText: 'ราคาต้นทุน',
+                            border: InputBorder.none,
+                          ),
+                          cursorColor: Colors.white,
+                          onSaved: (String? cost) {
+                            profile.product.cost = cost;
+                          },
+                        ),
+                      ),
+                      TextFieldContainer(
+                        color: whitePrimaryColor,
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            hintText: 'ราคาขาย',
+                            border: InputBorder.none,
+                          ),
+                          cursorColor: Colors.white,
+                          onSaved: (String? sell) {
+                            profile.product.sell = sell;
+                          },
                         ),
                       ),
 
@@ -155,7 +218,19 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                         thickness: 0.2,
                       ),
                       FlatButton(
-                        onPressed: () {},
+                        onPressed: () async {
+                          formkey.currentState?.save();
+                          if (formkey.currentState?.validate() == true) {
+                            formkey.currentState?.save();
+                            print("${profile.product.productname}");
+                            print("${profile.product.filename}");
+                            DatabaseService().UploadProduct(profile);
+                            formkey.currentState!.reset();
+                            setState(() {
+                              pathimg = "";
+                            });
+                          }
+                        },
                         child: const Text('Add'),
                       ),
                     ],

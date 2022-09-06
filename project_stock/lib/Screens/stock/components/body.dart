@@ -18,8 +18,9 @@ class Body extends StatefulWidget {
   State<Body> createState() => _BodyState();
 }
 
+UserProfile profile = UserProfile();
+
 class _BodyState extends State<Body> {
-  UserProfile profile = UserProfile();
   @override
   void initState() {
     super.initState();
@@ -30,7 +31,7 @@ class _BodyState extends State<Body> {
     String resultable = await DatabaseService().CallUserName();
     setState(() {
       profile.username = resultable;
-      print(profile.username);
+      // print(profile.username);
     });
   }
 
@@ -48,7 +49,7 @@ class _BodyState extends State<Body> {
         onPressed: () {
           Navigator.of(context).push(HeroDialogRoute(
             builder: (context) {
-              return  AddProductPopupCard();
+              return AddProductPopupCard();
             },
           ));
         },
