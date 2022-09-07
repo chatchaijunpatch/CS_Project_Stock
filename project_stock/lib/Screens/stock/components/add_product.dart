@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:form_field_validator/form_field_validator.dart';
 import 'package:project_stock/Screens/stock/components/cust_react_tween.dart';
 import 'package:project_stock/components/text_field_container.dart';
 import 'package:project_stock/constants.dart';
@@ -143,6 +144,7 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                             border: InputBorder.none,
                           ),
                           cursorColor: Colors.white,
+                          validator: RequiredValidator(errorText: 'กรุณาใส่ชื่อสินค้า'),
                           onSaved: (String? productname) {
                             profile.product.productname = productname;
                           },
@@ -169,6 +171,8 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                             border: InputBorder.none,
                           ),
                           cursorColor: Colors.white,
+                          keyboardType: TextInputType.number,
+                          validator: RequiredValidator(errorText: 'กรุณาใส่จำนวนสินค้า'),
                           onSaved: (String? stock) {
                             profile.product.stock = stock;
                           },
@@ -181,6 +185,8 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                             hintText: 'ราคาต้นทุน',
                             border: InputBorder.none,
                           ),
+                          keyboardType: TextInputType.number,
+                          validator: RequiredValidator(errorText: 'กรุณาระบุต้นทุน'),
                           cursorColor: Colors.white,
                           onSaved: (String? cost) {
                             profile.product.cost = cost;
@@ -194,6 +200,8 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                             hintText: 'ราคาขาย',
                             border: InputBorder.none,
                           ),
+                          keyboardType: TextInputType.number,
+                          validator: RequiredValidator(errorText: 'กรุณาระบุราคาขาย'),
                           cursorColor: Colors.white,
                           onSaved: (String? sell) {
                             profile.product.sell = sell;

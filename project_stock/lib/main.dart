@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project_stock/Screens/Welcome/welcome_screen.dart';
+import 'package:project_stock/Screens/stock/components/display_product.dart';
 import 'package:project_stock/Screens/stock/stock_screen.dart';
 import 'package:project_stock/constants.dart';
 import 'package:project_stock/screens/login/login_screen.dart';
@@ -48,8 +49,8 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               title: 'Flutter Demo',
               theme: ThemeData(),
-              home: SplashPage(duration: 5, goToPage: screen(auth)),
-              // home: LoginScreen(),
+              // home: SplashPage(duration: 5, goToPage: screen(auth)),
+              home: DisplayProduct(),
               // home: MainScreen(),
             );
           }
