@@ -1,3 +1,4 @@
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,23 @@ import 'package:project_stock/screens/splash/splaspage.dart';
 
 import 'Screens/bottomnavigator/bottomnav_screen.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    name: "CS-PROJECT",
+    options: FirebaseOptions(
+        apiKey:
+            "AAAAqCvF0Vc:APA91bGM7fe0ZAGZ2t8aFA4z2dLzSo7vQG5SLMmw8eY8pUJU_wdEgDUSYCzkPno3C05U_6hltCK46XPG8ls8n14GG-0w6aYxUIb2bll2wqR3JZGPDoaZCdXk-1gmQpxzQUc84a5nVsEF",
+        appId: "1:722288890199:android:33ea29f9b3fe9bccd42e12",
+        messagingSenderId: "722288890199",
+        projectId: "cs-project-8aa15",
+        storageBucket: "gs://cs-project-8aa15.appspot.com/"),
+  );
+  // await FirebaseAppCheck.instance.
+  await FirebaseAppCheck.instance.getToken();
+  await FirebaseAppCheck.instance.activate();
+  // await FirebaseAppCheck.instance.activate();
+
   runApp(const MyApp());
 }
 
@@ -49,8 +66,8 @@ class MyApp extends StatelessWidget {
               debugShowCheckedModeBanner: false,
               title: 'Flutter Demo',
               theme: ThemeData(),
-              // home: SplashPage(duration: 5, goToPage: screen(auth)),
-              home: DisplayProduct(),
+              home: SplashPage(duration: 5, goToPage: screen(auth)),
+              // home: DisplayProduct(),
               // home: MainScreen(),
             );
           }

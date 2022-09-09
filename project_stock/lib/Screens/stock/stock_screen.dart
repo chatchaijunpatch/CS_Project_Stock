@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project_stock/Screens/stock/components/body.dart';
+import 'package:project_stock/Screens/stock/components/display_product.dart';
 
 class StockPage extends StatelessWidget {
   final Future<FirebaseApp> firebase = Firebase.initializeApp();
@@ -21,9 +22,8 @@ class StockPage extends StatelessWidget {
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            return Scaffold(
-              body: Body(),
-            );
+            
+            return Body();
           }
           return Scaffold(
             body: Center(child: CircularProgressIndicator()),

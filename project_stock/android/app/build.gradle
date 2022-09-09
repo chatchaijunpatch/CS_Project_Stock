@@ -71,4 +71,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.firebase:firebase-appcheck-safetynet:16.0.1'
+    implementation 'com.google.android.gms:play-services-safetynet:18.0.1'
+    implementation "com.squareup.okhttp3:okhttp:4.9.3"
 }

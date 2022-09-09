@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:project_stock/Screens/stock/components/display_product.dart';
 import 'package:project_stock/Service/service.dart';
 import 'package:project_stock/components/hero_dialog_route.dart';
 import 'package:project_stock/storage/user.dart';
@@ -39,10 +40,12 @@ class _BodyState extends State<Body> {
   final auth = FirebaseAuth.instance;
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Column(
         children: [
           Text(auth.currentUser?.email ?? "User"),
           Text(profile.username!),
+          DisplayProduct(),
         ],
       ),
       floatingActionButton: FloatingActionButton(

@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image/image.dart';
 import 'package:project_stock/storage/user.dart';
 
 class DatabaseService {
@@ -60,6 +62,31 @@ class DatabaseService {
     return profile;
   }
 
+  Future CallProduct() async {
+    List product = [];
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(current!.uid)
+          .collection("product")
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((element) {
+          product.add(element.data());
+          // print(element.data());
+        });
+      }).then((value) async {
+        product = await getImage(product);
+        return product;
+      });
+      // product = await getImage(product);
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+    return product;
+  }
+
   Future<void> UploadProduct(UserProfile profile) async {
     await _UserColletion.doc(current!.uid).collection("product").add({
       "user_id": current!.uid,
@@ -74,15 +101,29 @@ class DatabaseService {
     await uploadFile(profile.product.filepath!, profile.product.filename!);
   }
 
-  Future<void> uploadFile(String filepath,String filename) async {
-    // ignore: unused_local_variable
+  Future<void> uploadFile(String filepath, String filename) async {
+    Image image = decodeImage(File(filepath).readAsBytesSync())!;
+    Image thumbnail = copyResize(image, width: 120);
+    var compressImage = new File(filepath)
+      ..writeAsBytesSync(encodeJpg(thumbnail, quality: 50));
     File file = File(filepath);
     try {
       await FirebaseStorage.instance
-          .ref(current!.uid+'/$filename')
-          .putFile(file);
+          .ref(current!.uid + '/$filename')
+          .putFile(compressImage);
     } on firebase_core.FirebaseException catch (e) {
       print(e);
     }
+  }
+
+  Future<List> getImage(List product) async {
+    for (var i = 0; i < product.length; i++) {
+      String dumy = product[i]['file_name'];
+      String downloadURL = await FirebaseStorage.instance
+          .ref(current!.uid + '/$dumy')
+          .getDownloadURL();
+      product[i]['file_name'] = downloadURL;
+    }
+    return product;
   }
 }
