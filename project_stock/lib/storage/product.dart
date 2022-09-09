@@ -7,6 +7,7 @@ class Product {
   String? stock;
   String? cost;
   String? sell;
+  String? qrcode;
   String? filepath;
   String? filename;
 }

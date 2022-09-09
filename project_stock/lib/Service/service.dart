@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image/image.dart';
+import 'package:project_stock/storage/product.dart';
 import 'package:project_stock/storage/user.dart';
 
 class DatabaseService {
@@ -75,10 +77,11 @@ class DatabaseService {
           product.add(element.data());
           // print(element.data());
         });
-      }).then((value) async {
-        product = await getImage(product);
-        return product;
       });
+      // .then((value) async {
+      //   product = await getImage(product);
+      //   return product;
+      // });
       // product = await getImage(product);
     } catch (e) {
       print(e.toString());
@@ -88,8 +91,12 @@ class DatabaseService {
   }
 
   Future<void> UploadProduct(UserProfile profile) async {
+    var intValue = Random().nextInt(4294967296);
+    profile.product.qrcode = intValue.toString();
+    print(profile.product.qrcode);
     await _UserColletion.doc(current!.uid).collection("product").add({
       "user_id": current!.uid,
+      "qrcode": profile.product.qrcode,
       "product_name": profile.product.productname,
       "file_path": profile.product.filepath,
       "file_name": profile.product.filename,
@@ -116,7 +123,7 @@ class DatabaseService {
     }
   }
 
-  Future<List> getImage(List product) async {
+  Future<List> ggetImage(List product) async {
     for (var i = 0; i < product.length; i++) {
       String dumy = product[i]['file_name'];
       String downloadURL = await FirebaseStorage.instance
@@ -125,5 +132,12 @@ class DatabaseService {
       product[i]['file_name'] = downloadURL;
     }
     return product;
+  }
+
+  Future<String> getImage(String name) async {
+    String downloadURL = await FirebaseStorage.instance
+        .ref(current!.uid + '/$name')
+        .getDownloadURL();
+    return downloadURL;
   }
 }

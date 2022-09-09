@@ -1,6 +1,9 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:project_stock/Screens/stock/components/qr_display.dart';
 import 'package:project_stock/Service/service.dart';
+import 'package:project_stock/components/hero_dialog_route.dart';
 import 'package:project_stock/constants.dart';
 
 class DisplayProduct extends StatefulWidget {
@@ -29,6 +32,13 @@ class DisplayProductState extends State<DisplayProduct> {
     }
   }
 
+  changeImage(String name, int index) async {
+    String change = await DatabaseService().getImage(name);
+    setState(() {
+      items[index]['file_name'] = change;
+    });
+  }
+
   // var items = [
   //   PlaceInfo('Dubai Mall Food Court', Color(0xff6DC8F3), Color(0xff73A1F9),
   //       4.4, 'Dubai · In The Dubai Mall', 'Cosy · Casual · Good for kids'),
@@ -51,7 +61,7 @@ class DisplayProductState extends State<DisplayProduct> {
         itemBuilder: (context, index) {
           return Center(
             child: Padding(
-              padding: const EdgeInsets.only(top: 10,left: 20,right: 20),
+              padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
               child: Stack(
                 children: <Widget>[
                   Container(
@@ -87,10 +97,18 @@ class DisplayProductState extends State<DisplayProduct> {
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                          child: Image.network(
-                            items[index]["file_name"],
+                          child: Image.file(
+                            File(items[index]["file_path"]),
                             height: 100,
                             width: 200,
+                            errorBuilder: (context, error, stackTrace) {
+                              changeImage(items[index]['file_name'], index);
+                              return Image.network(
+                                items[index]['file_name'],
+                                height: 100,
+                                width: 200,
+                              );
+                            },
                           ),
                           flex: 4,
                         ),
@@ -144,8 +162,19 @@ class DisplayProductState extends State<DisplayProduct> {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
+                              FlatButton(
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .push(HeroDialogRoute(builder: (context) {
+                                    return QrProductDisply(
+                                      qrcode: items[index]['qrcode'],
+                                    );
+                                  }));
+                                },
+                                child: Icon(Icons.qr_code),
+                              ),
                               Text(
-                                "฿"+items[index]['sell'],
+                                "฿" + items[index]['sell'],
                                 style: TextStyle(
                                     color: thirdProductTextColor,
                                     fontFamily: 'LEMONMILKBOLD',
