@@ -37,6 +37,7 @@ class DisplayProductState extends State<DisplayProduct> {
     setState(() {
       items[index]['file_name'] = change;
     });
+    Image.network(items[index]['file_name'],height: 200,width: 200,);
   }
 
   // var items = [

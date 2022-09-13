@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:project_stock/Screens/bottomnavigator/components/body.dart';
+import 'package:project_stock/Screens/sell/components/body.dart';
 
-class MainScreen extends StatelessWidget{
+class SellProductPage extends StatelessWidget{
    final Future<FirebaseApp> firebase = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {

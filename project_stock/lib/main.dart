@@ -28,7 +28,10 @@ void main() async {
   await FirebaseAppCheck.instance.activate();
   // await FirebaseAppCheck.instance.activate();
 
-  runApp(const MyApp());
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: MyApp(),
+  ));
 }
 
 Widget screen(FirebaseAuth auth) {

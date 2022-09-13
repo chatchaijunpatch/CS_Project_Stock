@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:project_stock/Screens/login/login_screen.dart';
+import 'package:project_stock/Screens/sell/sell_product_screen.dart';
 import 'package:project_stock/Screens/stock/stock_screen.dart';
 import 'package:project_stock/Service/service.dart';
 import 'package:project_stock/constants.dart';
+
 
 class Body extends StatefulWidget {
   Body({Key? key}) : super(key: key);
@@ -14,9 +16,10 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
+  
   final FirebaseAuth auth = FirebaseAuth.instance;
   int currentIndex = 0;
-  final screens = [StockPage(), Container(), Container(), Container()];
+  final screens = [StockPage(), SellProductPage(), Container(), Container()];
   final unSelectedIcon = [
     Icon(
       Icons.add_business_outlined,
@@ -95,7 +98,8 @@ class _BodyState extends State<Body> {
             IconButton(
                 onPressed: () {
                   DatabaseService().signout();
-                   Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => LoginScreen()));
                 },
                 icon: Icon(
                   Icons.logout_outlined,
