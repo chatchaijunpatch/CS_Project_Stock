@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:project_stock/components/shapespainter.dart';
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
@@ -43,10 +44,8 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     super.reassemble();
     if (Platform.isAndroid) {
       await controller!.resumeCamera();
-      _controller.initialize();
     }
     controller!.resumeCamera();
-    _controller.initialize();
   }
 
   @override
@@ -59,6 +58,8 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     //     ],
     //   ),
     // );
+    Size size = MediaQuery.of(context).size;
+
     return FutureBuilder<void>(
       future: _initializeControllerFuture,
       builder: (context, snapshot) {
@@ -69,9 +70,23 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
               children: [
                 Expanded(
                   flex: 5,
-                  child: QRView(
-                    key: qrkey,
-                    onQRViewCreated: onQRViewCreated,
+                  child: Stack(
+                    children: [
+                      QRView(
+                        key: qrkey,
+                        onQRViewCreated: onQRViewCreated,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left:50, top: 150, right: 50, bottom: 200),
+                        child: Center(
+                          child: CustomPaint(
+                            painter: PainterOne(),
+                            size: Size(size.height, size.width),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
@@ -86,6 +101,29 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
               ],
             ),
           );
+
+          // Expanded(
+          //   flex: 5,
+          //   child: QRView(
+          //     key: qrkey,
+          //     onQRViewCreated: onQRViewCreated,
+          //     // overlay: QrScannerOverlayShape(
+          //     //   borderRadius: 10,
+          //     //   borderLength: 20,
+          //     //   borderWidth: 10,
+          //     //   cutOutSize: MediaQuery.of(context).size.width * 0.8,
+          //     // ),
+          //   ),
+          // ),
+          // Center(
+          //   child: Expanded(
+          //       flex: 1,
+          //       child: CustomPaint(
+          //         painter: PainterOne(),
+          //         size: Size(size.height, size.width),
+          //       )),
+          // ),
+
         } else {
           // Otherwise, display a loading indicator.
           return const Center(child: CircularProgressIndicator());
@@ -112,10 +150,17 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   }
 
   checkRequest() async {
-    // PermissionStatus camera = await Permission.camera.request();
-    // if (camera == PermissionStatus.granted) {
-    //   final cameras = await availableCameras();
-    //   final firstCamera = cameras.first;
+    // PermissionStatus camerass = await Permission.camera.request();
+    // if (camerass == PermissionStatus.granted) {
+    //   print("Hee");
+    //   await availableCameras();
+    //   _controller = CameraController(
+    //       // Get a specific camera from the list of available cameras.
+    //       widget.camera,
+    //       // Define the resolution to use.
+    //       ResolutionPreset.medium,
+    //       imageFormatGroup: ImageFormatGroup.yuv420);
+    //   // _initializeControllerFuture = _controller.initialize();
     // }
     // await availableCameras();
     _controller = CameraController(
@@ -123,9 +168,10 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
       widget.camera,
       // Define the resolution to use.
       ResolutionPreset.medium,
+      imageFormatGroup: ImageFormatGroup.yuv420,
     );
 
-    // Next, initialize the controller. This returns a Future.
+    // // Next, initialize the controller. This returns a Future.
     _initializeControllerFuture = _controller.initialize();
   }
 }
