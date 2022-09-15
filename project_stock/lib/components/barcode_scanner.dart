@@ -6,8 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:project_stock/components/shapespainter.dart';
+import 'package:project_stock/storage/product.dart';
 // import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+
+import '../Service/service.dart';
+import '../storage/user.dart';
 
 class QrCodeScanner extends StatefulWidget {
   final CameraDescription camera;
@@ -20,6 +24,9 @@ class QrCodeScanner extends StatefulWidget {
 class _QrCodeScannerState extends State<QrCodeScanner> {
   final qrkey = GlobalKey(debugLabel: 'QR');
   late CameraController _controller;
+  UserProfile profile = UserProfile();
+  List items = [];
+
   Barcode? result;
 
   QRViewController? controller;
@@ -27,7 +34,28 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   @override
   void initState() {
     super.initState();
+    fetchDatabaseList();
+    fetchProductList();
     checkRequest();
+  }
+
+  fetchDatabaseList() async {
+    String resultable = await DatabaseService().CallUserName();
+    setState(() {
+      profile.username = resultable;
+      // print(profile.username);
+    });
+  }
+
+  fetchProductList() async {
+    dynamic product = await DatabaseService().CallProduct();
+    if (product == null) {
+      print("Ubable to retrieve");
+    } else {
+      setState(() {
+        items = product;
+      });
+    }
   }
 
   @override
@@ -45,7 +73,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     if (Platform.isAndroid) {
       await controller!.resumeCamera();
     }
-    controller!.resumeCamera();
+    controller!.pauseCamera();
   }
 
   @override
@@ -78,7 +106,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
-                            left:50, top: 150, right: 50, bottom: 200),
+                            left: 50, top: 150, right: 50, bottom: 200),
                         child: Center(
                           child: CustomPaint(
                             painter: PainterOne(),
@@ -140,13 +168,50 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     );
   }
 
-  void onQRViewCreated(QRViewController controller) {
+  void onQRViewCreated(QRViewController controller) async {
     this.controller = controller;
     controller.scannedDataStream.listen((event) {
       setState(() {
         result = event;
+        waitTime();
       });
     });
+    // setState(() {
+    //   waitTime(t);
+    // });
+  }
+
+  waitTime() async {
+    await Future.delayed(Duration(seconds: 3));
+    addToCart(result);
+    setState(() {
+      result = null;
+    });
+    await Future.delayed(Duration(seconds: 3));
+  }
+
+  void addToCart(Barcode? result) async {
+    if (result!.code != null) {
+      print("HEE " + result.code.toString());
+      for (var i = 0; i < items.length; i++) {
+        print("EIEI " + result.code.toString());
+        if (result.code.toString() == items[i]['qrcode'].toString()) {
+          print("Hee Yai mak");
+          Product? p = Product();
+          p.qrcode = items[i]['qrcode'].toString();
+          p.description = items[i]['description'].toString();
+          p.cost = items[i]['cost'].toString();
+          p.filename = items[i]['file_name'].toString();
+          p.filepath = items[i]['file_path'].toString();
+          p.productname = items[i]['product_name'].toString();
+          p.sell = items[i]['sell'].toString();
+          p.stock = items[i]['stock'].toString();
+          p.id = items[i]['user_id'].toString();
+          profile.cart.product = p;
+          await DatabaseService().UploadCart(profile);
+        }
+      }
+    }
   }
 
   checkRequest() async {

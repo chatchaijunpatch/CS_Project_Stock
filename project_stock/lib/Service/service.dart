@@ -93,7 +93,6 @@ class DatabaseService {
   Future<void> UploadProduct(UserProfile profile) async {
     var intValue = Random().nextInt(4294967296);
     profile.product.qrcode = intValue.toString();
-    print(profile.product.qrcode);
     await _UserColletion.doc(current!.uid).collection("product").add({
       "user_id": current!.uid,
       "qrcode": profile.product.qrcode,
@@ -104,6 +103,20 @@ class DatabaseService {
       "cost": profile.product.cost,
       "stock": profile.product.stock,
       "sell": profile.product.sell,
+    });
+    await uploadFile(profile.product.filepath!, profile.product.filename!);
+  }
+  Future<void> UploadCart(UserProfile profile) async {
+    await _UserColletion.doc(current!.uid).collection("cart").add({
+      "user_id": current!.uid,
+      "qrcode": profile.cart.product!.qrcode,
+      "product_name": profile.cart.product!.productname,
+      "file_path": profile.cart.product!.filepath,
+      "file_name": profile.cart.product!.filename,
+      "description": profile.cart.product!.description,
+      "cost": profile.cart.product!.cost,
+      "stock": profile.cart.product!.stock,
+      "sell": profile.cart.product!.sell,
     });
     await uploadFile(profile.product.filepath!, profile.product.filename!);
   }

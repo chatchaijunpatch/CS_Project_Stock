@@ -10,4 +10,5 @@ class Product {
   String? qrcode;
   String? filepath;
   String? filename;
+  String? id;
 }
