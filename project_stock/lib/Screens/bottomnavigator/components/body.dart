@@ -7,7 +7,6 @@ import 'package:project_stock/Screens/stock/stock_screen.dart';
 import 'package:project_stock/Service/service.dart';
 import 'package:project_stock/constants.dart';
 
-
 class Body extends StatefulWidget {
   Body({Key? key}) : super(key: key);
 
@@ -16,8 +15,13 @@ class Body extends StatefulWidget {
 }
 
 class _BodyState extends State<Body> {
-  
   final FirebaseAuth auth = FirebaseAuth.instance;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   int currentIndex = 0;
   final screens = [StockPage(), SellProductPage(), Container(), Container()];
   final unSelectedIcon = [

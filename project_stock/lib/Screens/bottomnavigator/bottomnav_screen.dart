@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:project_stock/Screens/bottomnavigator/components/body.dart';
 
-class MainScreen extends StatelessWidget{
-   final Future<FirebaseApp> firebase = Firebase.initializeApp();
+class MainScreen extends StatelessWidget {
+  final Future<FirebaseApp> firebase = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -25,8 +25,9 @@ class MainScreen extends StatelessWidget{
           );
         }
         return Scaffold(
-          body: Container(),
-        );
+            body: Scaffold(
+          body: (CircularProgressIndicator()),
+        ));
       },
     );
   }

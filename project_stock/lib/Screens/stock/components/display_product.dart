@@ -13,31 +13,35 @@ class DisplayProduct extends StatefulWidget {
 
 class DisplayProductState extends State<DisplayProduct> {
   final double _borderRadius = 8;
-  List items = [];
+  List? items;
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     fetchProductList();
+    super.initState();
   }
 
   fetchProductList() async {
-    dynamic product = await DatabaseService().CallProduct();
+    dynamic product = await DatabaseService().CallProduct().then((value) {
+      setState(() {
+        items = value;
+      });
+    });
     if (product == null) {
       print("Ubable to retrieve");
-    } else {
-      setState(() {
-        items = product;
-      });
     }
   }
 
   changeImage(String name, int index) async {
     String change = await DatabaseService().getImage(name);
     setState(() {
-      items[index]['file_name'] = change;
+      items![index]['file_name'] = change;
     });
-    Image.network(items[index]['file_name'],height: 200,width: 200,);
+    Image.network(
+      items![index]['file_name'],
+      height: 200,
+      width: 200,
+    );
   }
 
   // var items = [
@@ -55,147 +59,159 @@ class DisplayProductState extends State<DisplayProduct> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: ListView.builder(
-        shrinkWrap: true,
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    height: 125,
-                    decoration: BoxDecoration(
-                      color: blueTextColor,
-                      borderRadius: BorderRadius.circular(_borderRadius),
-                      // gradient: LinearGradient(colors: [
-                      //   items[index].startColor,
-                      //   items[index].endColor
-                      // ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                      boxShadow: [
-                        BoxShadow(
-                          // color: items[index].endColor,
-                          color: Colors.grey.withOpacity(0.4),
-                          blurRadius: 12,
-                          offset: Offset(0, 6),
-                        ),
-                      ],
-                    ),
-                  ),
-                  // Positioned(
-                  //   right: 0,
-                  //   bottom: 0,
-                  //   top: 0,
-                  //   child: CustomPaint(
-                  //     size: Size(100, 150),
-                  //     painter: CustomCardShapePainter(_borderRadius,
-                  //         items[index].startColor, items[index].endColor),
-                  //   ),
-                  // ),
-                  Positioned.fill(
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Image.file(
-                            File(items[index]["file_path"]),
-                            height: 100,
-                            width: 200,
-                            errorBuilder: (context, error, stackTrace) {
-                              changeImage(items[index]['file_name'], index);
-                              return Image.network(
-                                items[index]['file_name'],
-                                height: 100,
-                                width: 200,
-                              );
-                            },
+    if (items == null) {
+      return Center(
+          child: Padding(
+        padding: const EdgeInsets.only(top: 50),
+        child: CircularProgressIndicator(),
+      ));
+    } else {
+      return Expanded(
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: items!.length,
+          itemBuilder: (context, index) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+                child: Stack(
+                  children: <Widget>[
+                    Container(
+                      height: 125,
+                      decoration: BoxDecoration(
+                        color: blueTextColor,
+                        borderRadius: BorderRadius.circular(_borderRadius),
+                        // gradient: LinearGradient(colors: [
+                        //   items[index].startColor,
+                        //   items[index].endColor
+                        // ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                        boxShadow: [
+                          BoxShadow(
+                            // color: items[index].endColor,
+                            color: Colors.grey.withOpacity(0.4),
+                            blurRadius: 12,
+                            offset: Offset(0, 6),
                           ),
-                          flex: 4,
-                        ),
-                        Expanded(
-                          flex: 4,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                items[index]["product_name"],
-                                style: TextStyle(
-                                    color: productTextColor,
-                                    fontFamily: 'LEMONMILKBOLD',
-                                    fontWeight: FontWeight.w700),
-                              ),
-                              Text(
-                                items[index]["description"],
-                                style: TextStyle(
-                                  color: productTextColor,
-                                  fontFamily: 'LEMONMILK',
+                        ],
+                      ),
+                    ),
+                    // Positioned(
+                    //   right: 0,
+                    //   bottom: 0,
+                    //   top: 0,
+                    //   child: CustomPaint(
+                    //     size: Size(100, 150),
+                    //     painter: CustomCardShapePainter(_borderRadius,
+                    //         items[index].startColor, items[index].endColor),
+                    //   ),
+                    // ),
+                    Positioned.fill(
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Image.file(
+                              File(items![index]["file_path"]),
+                              height: 100,
+                              width: 200,
+                              errorBuilder: (context, error, stackTrace) {
+                                changeImage(items![index]['file_name'], index);
+                                return Image.network(
+                                  items![index]['file_name'],
+                                  height: 100,
+                                  width: 200,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Center(
+                                        child: CircularProgressIndicator());
+                                  },
+                                );
+                              },
+                            ),
+                            flex: 4,
+                          ),
+                          Expanded(
+                            flex: 4,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(
+                                  items![index]["product_name"],
+                                  style: TextStyle(
+                                      color: productTextColor,
+                                      fontFamily: 'LEMONMILKBOLD',
+                                      fontWeight: FontWeight.w700),
                                 ),
-                              ),
-                              SizedBox(height: 16),
-                              Row(
-                                children: <Widget>[
-                                  Icon(
-                                    Icons.inbox_outlined,
-                                    color: secondaryProductTextColor,
-                                    size: 16,
+                                Text(
+                                  items![index]["description"],
+                                  style: TextStyle(
+                                    color: productTextColor,
+                                    fontFamily: 'LEMONMILK',
                                   ),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  Flexible(
-                                    child: Text(
-                                      items[index]['stock'],
-                                      style: TextStyle(
-                                        color: secondaryProductTextColor,
-                                        fontFamily: 'LEMONMILK',
+                                ),
+                                SizedBox(height: 16),
+                                Row(
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.inbox_outlined,
+                                      color: secondaryProductTextColor,
+                                      size: 16,
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        items![index]['stock'],
+                                        style: TextStyle(
+                                          color: secondaryProductTextColor,
+                                          fontFamily: 'LEMONMILK',
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              FlatButton(
-                                onPressed: () {
-                                  Navigator.of(context)
-                                      .push(HeroDialogRoute(builder: (context) {
-                                    return QrProductDisply(
-                                      qrcode: items[index]['qrcode'],
-                                    );
-                                  }));
-                                },
-                                child: Icon(Icons.qr_code),
-                              ),
-                              Text(
-                                "฿" + items[index]['sell'],
-                                style: TextStyle(
-                                    color: thirdProductTextColor,
-                                    fontFamily: 'LEMONMILKBOLD',
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                              // RatingBar(rating: items[index].rating),
-                            ],
+                          Expanded(
+                            flex: 2,
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                FlatButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        HeroDialogRoute(builder: (context) {
+                                      return QrProductDisply(
+                                        qrcode: items![index]['qrcode'],
+                                      );
+                                    }));
+                                  },
+                                  child: Icon(Icons.qr_code),
+                                ),
+                                Text(
+                                  "฿" + items![index]['sell'],
+                                  style: TextStyle(
+                                      color: thirdProductTextColor,
+                                      fontFamily: 'LEMONMILKBOLD',
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700),
+                                ),
+                                // RatingBar(rating: items[index].rating),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          );
-        },
-      ),
-    );
+            );
+          },
+        ),
+      );
+    }
   }
 }
 

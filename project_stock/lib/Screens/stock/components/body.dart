@@ -24,21 +24,33 @@ UserProfile profile = UserProfile();
 class _BodyState extends State<Body> {
   @override
   void initState() {
-    super.initState();
     fetchDatabaseList();
+    super.initState();
   }
 
   fetchDatabaseList() async {
-    String resultable = await DatabaseService().CallUserName();
-    setState(() {
-      profile.username = resultable;
-      // print(profile.username);
+    dynamic resultable = await DatabaseService().CallUserName().then((value) {
+      setState(() {
+        profile.username = value;
+      });
     });
+    if (resultable == null) {
+      print("Unable to retrieve");
+    }
+    // setState(() {
+    //   profile.username = resultable;
+    //   // print(profile.username);
+    // });
   }
 
   @override
   final auth = FirebaseAuth.instance;
   Widget build(BuildContext context) {
+    if (profile.username == null) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Column(

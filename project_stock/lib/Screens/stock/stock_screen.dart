@@ -22,7 +22,6 @@ class StockPage extends StatelessWidget {
             );
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            
             return Body();
           }
           return Scaffold(

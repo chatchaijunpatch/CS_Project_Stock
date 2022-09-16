@@ -19,7 +19,7 @@ class BodyState extends State<Body> {
     return Scaffold(
       body: Column(
         children: [
-          Text("Heedex"),
+          // Text("Heedex"),
           Text(result ?? "Not have value"),
         ],
       ),
@@ -33,7 +33,7 @@ class BodyState extends State<Body> {
             );
           })));
         },
-        child: Text("Hee"),
+        child: Icon(Icons.qr_code_scanner),
         backgroundColor: Colors.red,
       ),
     );
