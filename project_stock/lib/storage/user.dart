@@ -7,6 +7,7 @@ class UserProfile {
   String? email;
   String? password;
   String? username;
+  String? userid;
   Product product = Product();
   Cart cart = Cart();
   UserProfile();
@@ -16,4 +17,8 @@ class UserProfile {
     email = (dataSnapshot['email']);
     username = (dataSnapshot['username']);
   }
+  Map<String, dynamic> ToString() => {
+        "user_id": userid,
+        "product": product.ToString(),
+      };
 }

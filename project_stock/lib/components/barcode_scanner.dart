@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,7 +26,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   final qrkey = GlobalKey(debugLabel: 'QR');
   late CameraController _controller;
   UserProfile profile = UserProfile();
-  List items = [];
+  List? items;
 
   Barcode? result;
 
@@ -48,13 +49,13 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   }
 
   fetchProductList() async {
-    dynamic product = await DatabaseService().CallProduct();
+    dynamic product = await DatabaseService().CallProduct().then((value) {
+      setState(() {
+        items = value;
+      });
+    });
     if (product == null) {
       print("Ubable to retrieve");
-    } else {
-      setState(() {
-        items = product;
-      });
     }
   }
 
@@ -191,23 +192,24 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   }
 
   void addToCart(Barcode? result) async {
+    final current = FirebaseAuth.instance.currentUser;
     if (result!.code != null) {
-      print("HEE " + result.code.toString());
-      for (var i = 0; i < items.length; i++) {
-        print("EIEI " + result.code.toString());
-        if (result.code.toString() == items[i]['qrcode'].toString()) {
-          print("Hee Yai mak");
+      for (var i = 0; i < items!.length; i++) {
+        if (result.code.toString() ==
+            items![i]['product']['qrcode'].toString()) {
           Product? p = Product();
-          p.qrcode = items[i]['qrcode'].toString();
-          p.description = items[i]['description'].toString();
-          p.cost = items[i]['cost'].toString();
-          p.filename = items[i]['file_name'].toString();
-          p.filepath = items[i]['file_path'].toString();
-          p.productname = items[i]['product_name'].toString();
-          p.sell = items[i]['sell'].toString();
-          p.stock = items[i]['stock'].toString();
-          p.id = items[i]['user_id'].toString();
+          p.qrcode = items![i]['product']['qrcode'].toString();
+          p.description = items![i]['product']['description'].toString();
+          p.cost = items![i]['product']['cost'].toString();
+          p.filename = items![i]['product']['file_name'].toString();
+          p.filepath = items![i]['product']['file_path'].toString();
+          p.productname = items![i]['product']['product_name'].toString();
+          p.sell = items![i]['product']['sell'].toString();
+          p.stock = items![i]['product']['stock'].toString();
+          p.productid = items![i]['product']['product_id'].toString();
           profile.cart.product = p;
+          profile.userid = current!.uid;
+          profile.cart.amount = "1";
           await DatabaseService().UploadCart(profile);
         }
       }

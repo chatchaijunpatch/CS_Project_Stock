@@ -75,7 +75,7 @@ class DatabaseService {
           .then((querySnapshot) {
         querySnapshot.docs.forEach((element) {
           product.add(element.data());
-          // print(element.data());
+          print(element.data());
         });
       });
       // .then((value) async {
@@ -90,35 +90,93 @@ class DatabaseService {
     return product;
   }
 
+  Future CallCart() async {
+    List product = [];
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(current!.uid)
+          .collection("cart")
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((element) {
+          product.add(element.data());
+          // print(element.data());
+        });
+        // var cart = List.generate(product.length, (index) => List(2),growable: false);
+        // product.sort(((a, b) {
+        //   return int.parse(a['qrcode']).compareTo(int.parse(b['qrcode']));
+        // }));
+        // String collect = '';
+        // int count = -1;
+        // int item = 1;
+        // for (var i = 0; i < product.length; i++) {
+        //   if (product[i]['qrcode'] == collect) {
+        //     item += 1;
+        //     cart[count][1] = item;
+        //   } else {
+        //     item = 1;
+        //     count += 1;
+        //     collect = product[i]['qrcode'];
+        //     cart.add(product[i]);
+        //     print(cart[0]);
+        //     cart[count].add(item);
+        //   }
+        // }
+        // for (var i = 0; i < cart.length; i++) {
+        //   print(cart[i]);
+        // }
+      });
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+    return product;
+  }
+
   Future<void> UploadProduct(UserProfile profile) async {
     var intValue = Random().nextInt(4294967296);
+    profile.userid = current!.uid;
     profile.product.qrcode = intValue.toString();
-    await _UserColletion.doc(current!.uid).collection("product").add({
-      "user_id": current!.uid,
-      "qrcode": profile.product.qrcode,
-      "product_name": profile.product.productname,
-      "file_path": profile.product.filepath,
-      "file_name": profile.product.filename,
-      "description": profile.product.description,
-      "cost": profile.product.cost,
-      "stock": profile.product.stock,
-      "sell": profile.product.sell,
-    });
+    final docProduct =
+        await _UserColletion.doc(current!.uid).collection("product").doc();
+    profile.product.productid = docProduct.id;
+    await docProduct.set(profile.ToString());
     await uploadFile(profile.product.filepath!, profile.product.filename!);
   }
+
   Future<void> UploadCart(UserProfile profile) async {
-    await _UserColletion.doc(current!.uid).collection("cart").add({
-      "user_id": current!.uid,
-      "qrcode": profile.cart.product!.qrcode,
-      "product_name": profile.cart.product!.productname,
-      "file_path": profile.cart.product!.filepath,
-      "file_name": profile.cart.product!.filename,
-      "description": profile.cart.product!.description,
-      "cost": profile.cart.product!.cost,
-      "stock": profile.cart.product!.stock,
-      "sell": profile.cart.product!.sell,
-    });
-    await uploadFile(profile.product.filepath!, profile.product.filename!);
+    List cartdemo = await CallCart();
+    int stats = 0;
+    if (cartdemo.length == 0) {
+      await UploadCartData(profile);
+    } else {
+      //ซ้ำ
+      for (var cart in cartdemo) {
+        if (profile.cart.product!.qrcode == cart['product']['qrcode']) {
+          if ((int.parse(cart['amount']) <
+              int.parse(cart['product']['stock']))) {
+            await _UserColletion.doc(current!.uid)
+                .collection('cart')
+                .doc(cart['cartid'])
+                .update({
+              "amount": (int.parse(cart['amount']) + 1).toString(),
+            });
+          }
+          stats = 1;
+        }
+      }
+      if (stats == 0) {
+        await UploadCartData(profile);
+      }
+    }
+  }
+
+  UploadCartData(UserProfile profile) async {
+    var docCart =
+        await _UserColletion.doc(current!.uid).collection("cart").doc();
+    profile.cart.cartid = docCart.id;
+    await docCart.set(profile.cart.ToString());
   }
 
   Future<void> uploadFile(String filepath, String filename) async {

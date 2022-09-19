@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:project_stock/Screens/cart/cart_screen.dart';
 import 'package:project_stock/Screens/login/login_screen.dart';
 import 'package:project_stock/Screens/sell/sell_product_screen.dart';
 import 'package:project_stock/Screens/stock/stock_screen.dart';
@@ -22,6 +23,7 @@ class _BodyState extends State<Body> {
     super.initState();
   }
 
+  int header = 0;
   int currentIndex = 0;
   final screens = [StockPage(), SellProductPage(), Container(), Container()];
   final unSelectedIcon = [
@@ -83,12 +85,34 @@ class _BodyState extends State<Body> {
           fontWeight: FontWeight.bold),
     )
   ];
+  changePage() {
+    if (header == 0) {
+      return screens[currentIndex];
+    } else {
+      return CartPage();
+    }
+  }
+
+  changeTitle() {
+    if (header == 0) {
+      return titleScreen[currentIndex];
+    } else {
+      return Text(
+        "Cart",
+        style: TextStyle(
+            color: Colors.black,
+            fontFamily: "LEMONMILKBOLD",
+            fontSize: 25,
+            fontWeight: FontWeight.bold),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: titleScreen[currentIndex],
+          title: changeTitle(),
           leading: IconButton(
             onPressed: () {},
             icon: Icon(
@@ -99,6 +123,16 @@ class _BodyState extends State<Body> {
             padding: EdgeInsets.only(left: (30.0)),
           ),
           actions: [
+            IconButton(
+                onPressed: () {
+                  setState(() {
+                    header = 1;
+                  });
+                },
+                icon: Icon(
+                  Icons.shopping_bag,
+                  color: Colors.black,
+                )),
             IconButton(
                 onPressed: () {
                   DatabaseService().signout();
@@ -113,7 +147,7 @@ class _BodyState extends State<Body> {
           centerTitle: true,
           backgroundColor: Colors.white,
         ),
-        body: screens[currentIndex],
+        body: changePage(),
         // length: 4,
         // child: Scaffold(
         //     body: TabBarView(children: [
@@ -137,6 +171,7 @@ class _BodyState extends State<Body> {
             onTap: (index) {
               setState(() {
                 currentIndex = index;
+                header = 0;
               });
             },
             selectedItemColor: Color(0XFF242844),

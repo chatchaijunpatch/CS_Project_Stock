@@ -8,6 +8,7 @@ import 'package:project_stock/Screens/stock/stock_screen.dart';
 import 'package:project_stock/constants.dart';
 import 'package:project_stock/screens/login/login_screen.dart';
 import 'package:project_stock/screens/splash/splaspage.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 
 import 'Screens/bottomnavigator/bottomnav_screen.dart';
 
@@ -23,12 +24,13 @@ void main() async {
         projectId: "cs-project-8aa15",
         storageBucket: "gs://cs-project-8aa15.appspot.com/"),
   );
+
   // await FirebaseAppCheck.instance.
-  await FirebaseAppCheck.instance.getToken();
-  await FirebaseAppCheck.instance.activate();
+  await FirebaseAppCheck.instance.activate().then((value) => runApp(MyApp()));
+  // FirebaseAppCheck firebaseAppCheck = FirebaseAppCheck.instance;
   // await FirebaseAppCheck.instance.activate();
 
-  runApp(MyApp());
+  // runApp(MyApp());
 }
 
 Widget screen(FirebaseAuth auth) {

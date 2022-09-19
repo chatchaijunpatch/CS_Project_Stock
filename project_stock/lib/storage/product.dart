@@ -10,5 +10,16 @@ class Product {
   String? qrcode;
   String? filepath;
   String? filename;
-  String? id;
+  String? productid;
+  Map<String, dynamic> ToString() => {
+        "qrcode": qrcode,
+        "product_name": productname,
+        "file_path": filepath,
+        "file_name": filename,
+        "description": description,
+        "cost": cost,
+        "stock": stock,
+        "sell": sell,
+        "product_id": productid,
+      };
 }
