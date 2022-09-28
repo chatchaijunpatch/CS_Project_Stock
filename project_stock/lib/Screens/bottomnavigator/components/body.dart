@@ -9,7 +9,8 @@ import 'package:project_stock/Service/service.dart';
 import 'package:project_stock/constants.dart';
 
 class Body extends StatefulWidget {
-  Body({Key? key}) : super(key: key);
+  int? index = 0;
+  Body({Key? key, this.index}) : super(key: key);
 
   @override
   State<Body> createState() => _BodyState();
@@ -19,6 +20,10 @@ class _BodyState extends State<Body> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   @override
   void initState() {
+    if (widget.index != null) {
+      header = widget.index!;
+    }
+    // header = widget.index!;
     // TODO: implement initState
     super.initState();
   }

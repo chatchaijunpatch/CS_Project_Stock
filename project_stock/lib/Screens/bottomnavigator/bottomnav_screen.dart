@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:project_stock/Screens/bottomnavigator/components/body.dart';
 
 class MainScreen extends StatelessWidget {
+  int? index;
+  MainScreen({Key? key, this.index}) : super(key: key);
   final Future<FirebaseApp> firebase = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
@@ -21,7 +23,7 @@ class MainScreen extends StatelessWidget {
         }
         if (snapshot.connectionState == ConnectionState.done) {
           return Scaffold(
-            body: Body(),
+            body: Body(index: index,),
           );
         }
         return Scaffold(

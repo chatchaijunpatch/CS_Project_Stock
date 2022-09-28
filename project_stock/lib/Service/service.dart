@@ -145,6 +145,15 @@ class DatabaseService {
     await uploadFile(profile.product.filepath!, profile.product.filename!);
   }
 
+  Future<void> UpdateAmountProduct(dynamic cart_id, int amount) async {
+    final updateProduct = await _UserColletion.doc(current!.uid)
+        .collection("cart")
+        .doc(cart_id)
+        .update({
+      "amount": amount.toString(),
+    });
+  }
+
   Future<void> UploadCart(UserProfile profile) async {
     List cartdemo = await CallCart();
     int stats = 0;
