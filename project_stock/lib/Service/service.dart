@@ -154,6 +154,13 @@ class DatabaseService {
     });
   }
 
+  Future<void> DeleteCartProduct(dynamic cart_id) async {
+    final delCartProduct = await _UserColletion.doc(current!.uid)
+        .collection("cart")
+        .doc(cart_id)
+        .delete();
+  }
+
   Future<void> UploadCart(UserProfile profile) async {
     List cartdemo = await CallCart();
     int stats = 0;

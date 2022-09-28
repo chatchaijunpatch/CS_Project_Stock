@@ -31,6 +31,7 @@ class CartProductState extends State<CartProduct> {
       });
     });
     if (product == null) {
+      //เดี๋ยวมาแก้
       print("Ubable to retrieve");
     }
   }
@@ -51,11 +52,20 @@ class CartProductState extends State<CartProduct> {
     final itemName = items![index]['product']['product_name'];
     if (command.toLowerCase() == "ลบสินค้า") {
       setState(() {
-        items!.removeAt(index);
+        DatabaseService()
+            .DeleteCartProduct(items![index]['cartid'])
+            .then((value) {
+          Fluttertoast.showToast(
+                  msg:
+                      "สินค้า ${items![index]['product']['product_name']} ลบสำเร็จ",
+                  gravity: ToastGravity.CENTER)
+              .then((value) {
+            setState(() {
+              fetchProductList();
+            });
+          });
+        });
       });
-      Fluttertoast.showToast(
-          msg: "สินค้า ${itemName} ลบออกจากตะกร้าเรียบร้อย",
-          gravity: ToastGravity.CENTER);
     } else {
       Navigator.of(context).push(HeroDialogRoute(
         builder: (context) {
@@ -83,11 +93,24 @@ class CartProductState extends State<CartProduct> {
               key: Key(items![index].toString()),
               endActionPane: ActionPane(
                 motion: const BehindMotion(),
-                dismissible: DismissiblePane(onDismissed: () {
-                  setState(() {
-                    items!.removeAt(index);
-                  });
-                }),
+                // dismissible: DismissiblePane(onDismissed: () {
+                //   setState(() {
+                //     // items!.remove(index);
+                //     DatabaseService()
+                //         .DeleteCartProduct(items![index]['cartid'])
+                //         .then((value) {
+                //       Fluttertoast.showToast(
+                //           msg:
+                //               "สินค้า ${items![index]['product']['product_name']} ลบสำเร็จ",
+                //           gravity: ToastGravity.CENTER);
+                //     }).then((value) {
+                //       setState(() {
+                //         fetchProductList();
+                //       });
+                //     });
+                //     items!.remove(index);
+                //   });
+                // }),
                 children: [
                   SlidableAction(
                       icon: Icons.create,

@@ -176,6 +176,10 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
         result = event;
         waitTime();
       });
+    }).onDone(() {
+      setState(() {
+        waitTime();
+      });
     });
     // setState(() {
     //   waitTime(t);
@@ -183,15 +187,22 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
   }
 
   waitTime() async {
-    await Future.delayed(Duration(seconds: 3));
-    addToCart(result);
-    setState(() {
-      result = null;
+    await Future.delayed(Duration(seconds: 3)).then((value) async{
+      await addToCart(result);
+    }).then((value) {
+      setState(() {
+        result = null;
+      });
+    }).then((value) async {
+      await Future.delayed(Duration(seconds: 3));
     });
-    await Future.delayed(Duration(seconds: 3));
+    // addToCart(result);
+    // setState(() {
+    //   result = null;
+    // });
   }
 
-  void addToCart(Barcode? result) async {
+  Future<void> addToCart(Barcode? result) async {
     final current = FirebaseAuth.instance.currentUser;
     if (result!.code != null) {
       for (var i = 0; i < items!.length; i++) {
