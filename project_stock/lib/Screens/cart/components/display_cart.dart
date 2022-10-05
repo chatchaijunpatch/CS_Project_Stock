@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:project_stock/Screens/cart/components/edit_product_cart.dart';
+import 'package:project_stock/Screens/payment/payment_screen.dart';
 import 'package:project_stock/Screens/stock/components/qr_display.dart';
 import 'package:project_stock/Service/service.dart';
 import 'package:project_stock/components/hero_dialog_route.dart';
@@ -340,7 +341,12 @@ class CartProductState extends State<CartProduct> {
                             width: 20,
                           ),
                           RaisedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.push(context,
+                                  MaterialPageRoute(builder: (context) {
+                                return PaymentScreen();
+                              }));
+                            },
                             child: Text(
                               "ชำระเงิน",
                               style: TextStyle(color: Colors.white),
