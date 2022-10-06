@@ -343,8 +343,10 @@ class CartProductState extends State<CartProduct> {
                           RaisedButton(
                             onPressed: () {
                               Navigator.push(context,
-                                  MaterialPageRoute(builder: (context) {
-                                return PaymentScreen();
+                                  HeroDialogRoute(builder: (context) {
+                                return PaymentScreen(
+                                  total: total,
+                                );
                               }));
                             },
                             child: Text(

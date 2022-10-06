@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ import 'package:project_stock/components/hero_dialog_route.dart';
 import 'package:project_stock/storage/user.dart';
 import 'package:project_stock/Screens/stock/components/add_product.dart';
 
+import '../../../components/barcode_scanner.dart';
 import 'cust_react_tween.dart';
 
 class Body extends StatefulWidget {
@@ -52,25 +54,46 @@ class _BodyState extends State<Body> {
       );
     }
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      body: Column(
-        children: [
-          Text(auth.currentUser?.email ?? "User"),
-          Text(profile.username!),
-          DisplayProduct(),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(HeroDialogRoute(
-            builder: (context) {
-              return AddProductPopupCard();
-            },
-          ));
-        },
-        child: Text("+"),
-        backgroundColor: Colors.red,
-      ),
-    );
+        resizeToAvoidBottomInset: false,
+        body: Column(
+          children: [
+            Text(auth.currentUser?.email ?? "User"),
+            Text(profile.username!),
+            DisplayProduct(),
+          ],
+        ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).push(HeroDialogRoute(
+                  builder: (context) {
+                    return AddProductPopupCard();
+                  },
+                ));
+              },
+              child: Text("+"),
+              backgroundColor: Colors.red,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            FloatingActionButton(
+              onPressed: () async {
+                final cameras = await availableCameras();
+                Navigator.of(context).push(PageRouteBuilder(
+                    pageBuilder: ((context, animation, secondaryAnimation) {
+                  return QrCodeScanner(
+                    camera: cameras.first,
+                  );
+                })));
+              },
+              child: Icon(Icons.qr_code_scanner),
+              backgroundColor: Colors.red,
+            ),
+          ],
+        ));
   }
 }

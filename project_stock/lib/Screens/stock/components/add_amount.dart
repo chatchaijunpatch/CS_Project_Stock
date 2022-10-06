@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -15,31 +16,49 @@ import 'package:project_stock/storage/cart.dart';
 import 'package:project_stock/storage/user.dart';
 
 import '../../../Service/service.dart';
+import '../../../storage/product.dart';
 
-class EditProductCartPopupCard extends StatefulWidget {
+class AddAmountProductToCart extends StatefulWidget {
   final Cartproduct;
-  const EditProductCartPopupCard({Key? key, this.Cartproduct})
-      : super(key: key);
+  const AddAmountProductToCart({Key? key, this.Cartproduct}) : super(key: key);
 
   @override
-  State<EditProductCartPopupCard> createState() =>
-      _EditProductCartPopupCardState();
+  State<AddAmountProductToCart> createState() => _AddAmountProductToCartState();
 }
 
-class _EditProductCartPopupCardState extends State<EditProductCartPopupCard> {
+class _AddAmountProductToCartState extends State<AddAmountProductToCart> {
+  UserProfile profile = UserProfile();
+
   final formkey = GlobalKey<FormState>();
-  int backup = 0;
   int amount = 0;
   dynamic product;
   @override
   void initState() {
     product = widget.Cartproduct;
     setState(() {
-      amount = int.parse(product['amount']);
-      backup = amount;
+      amount = 1;
     });
     // ignore: prefer_interpolation_to_compose_strings
     super.initState();
+  }
+
+  Future<void> addToCart(dynamic product, int amount) async {
+    final current = FirebaseAuth.instance.currentUser;
+
+    Product? p = Product();
+    p.qrcode = product!['product']['qrcode'].toString();
+    p.description = product!['product']['description'].toString();
+    p.cost = product!['product']['cost'].toString();
+    p.filename = product!['product']['file_name'].toString();
+    p.filepath = product!['product']['file_path'].toString();
+    p.productname = product!['product']['product_name'].toString();
+    p.sell = product!['product']['sell'].toString();
+    p.stock = product!['product']['stock'].toString();
+    p.productid = product!['product']['product_id'].toString();
+    profile.cart.product = p;
+    profile.userid = current!.uid;
+    profile.cart.amount = amount.toString();
+    await DatabaseService().UploadCart(profile);
   }
 
   @override
@@ -129,7 +148,7 @@ class _EditProductCartPopupCardState extends State<EditProductCartPopupCard> {
                       ),
                     ),
                     FlatButton(
-                      onPressed: () {
+                      onPressed: () async {
                         formkey.currentState?.save();
                         if (formkey.currentState?.validate() == true) {
                           if (amount <=
@@ -137,41 +156,62 @@ class _EditProductCartPopupCardState extends State<EditProductCartPopupCard> {
                                       product["product"]['stock'].toString()) &&
                               amount >= 1) {
                             formkey.currentState?.save();
-                            backup = amount;
-                            DatabaseService()
-                                .UpdateAmountProduct(product["cartid"], amount)
-                                .then((value) {
+                            await addToCart(product, amount).then((value) {
                               Fluttertoast.showToast(
-                                      msg:
-                                          "สินค้า ${product['product']['product_name']} จำนวนเป็น ${amount.toString()} เรียบร้อย",
-                                      gravity: ToastGravity.CENTER)
-                                  .then((value) {
-                                Navigator.of(context)
-                                    .pushReplacement(MaterialPageRoute(
-                                  builder: (context) {
-                                    return MainScreen(
-                                      index: 1,
-                                    );
-                                  },
-                                ));
-                              });
+                                  msg:
+                                      "เพิ่มสินค้า ${product['product']['product_name']} จำนวนเป็น ${amount.toString()} เรียบร้อย",
+                                  gravity: ToastGravity.CENTER);
+                              //     .then((value) {
+                              //   Navigator.of(context)
+                              //       .pushReplacement(MaterialPageRoute(
+                              //     builder: (context) {
+                              //       return MainScreen(
+                              //         index: 0,
+                              //       );
+                              //     },
+                              //   ));
+                              // });
                             });
+                            // DatabaseService()
+                            //     .UpdateAmountProduct(product["cartid"], amount)
+                            //     .then((value) {
+                            //   Fluttertoast.showToast(
+                            //           msg:
+                            //               "สินค้า ${product['product']['product_name']} จำนวนเป็น ${amount.toString()} เรียบร้อย",
+                            //           gravity: ToastGravity.CENTER)
+                            //       .then((value) {
+                            //     Navigator.of(context)
+                            //         .pushReplacement(MaterialPageRoute(
+                            //       builder: (context) {
+                            //         return MainScreen(
+                            //           index: 1,
+                            //         );
+                            //       },
+                            //     ));
+                            //   });
+                            // });
+                          } else if (amount >
+                              int.parse(
+                                  product['product']['stock'].toString())) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                    "จำนวนในการเลือกสินค้ามากกว่าจำนวนในคลัง"),
+                              ),
+                            );
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                    "จำนวนของในตะกร้ามากกว่าจำนวนในคลัง หรือ น้อยกว่า 1"),
+                                    "จำนวนในการเพิ่มสู่ตะกร้าต้องไม่ติดลบหรือศูนย์"),
                               ),
                             );
-                            setState(() {
-                              amount = backup;
-                            });
                           }
                         }
                       },
                       color: Colors.black,
                       child: const Text(
-                        'ยืนยันการแก้ไข',
+                        'เพิ่มเข้าตะกร้า',
                         style: TextStyle(color: Colors.white),
                       ),
                     )

@@ -176,10 +176,13 @@ class DatabaseService {
                 .collection('cart')
                 .doc(cart['cartid'])
                 .update({
-              "amount": (int.parse(cart['amount']) + 1).toString(),
+              "amount":
+                  (int.parse(cart['amount']) + int.parse(profile.cart.amount!))
+                      .toString(),
             });
           }
           stats = 1;
+          break;
         }
       }
       if (stats == 0) {

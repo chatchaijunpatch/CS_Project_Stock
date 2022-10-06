@@ -1,10 +1,14 @@
 import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:project_stock/Screens/stock/components/add_amount.dart';
 import 'package:project_stock/Screens/stock/components/qr_display.dart';
 import 'package:project_stock/Service/service.dart';
 import 'package:project_stock/components/hero_dialog_route.dart';
 import 'package:project_stock/constants.dart';
+
+import '../../cart/components/edit_product_cart.dart';
 
 class DisplayProduct extends StatefulWidget {
   @override
@@ -74,140 +78,188 @@ class DisplayProductState extends State<DisplayProduct> {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      height: 125,
-                      decoration: BoxDecoration(
-                        color: blueTextColor,
-                        borderRadius: BorderRadius.circular(_borderRadius),
-                        // gradient: LinearGradient(colors: [
-                        //   items[index].startColor,
-                        //   items[index].endColor
-                        // ], begin: Alignment.topLeft, end: Alignment.bottomRight),
-                        boxShadow: [
-                          BoxShadow(
-                            // color: items[index].endColor,
-                            color: Colors.grey.withOpacity(0.4),
-                            blurRadius: 12,
-                            offset: Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Positioned(
-                    //   right: 0,
-                    //   bottom: 0,
-                    //   top: 0,
-                    //   child: CustomPaint(
-                    //     size: Size(100, 150),
-                    //     painter: CustomCardShapePainter(_borderRadius,
-                    //         items[index].startColor, items[index].endColor),
-                    //   ),
-                    // ),
-                    Positioned.fill(
-                      child: Row(
+                child: Slidable(
+                  key: Key(items![index].toString()),
+                  endActionPane: ActionPane(
+                    motion: const BehindMotion(),
+                    children: [
+                      SlidableAction(
+                          icon: Icons.create,
+                          label: "แก้ไข",
+                          backgroundColor: Colors.blue,
+                          onPressed: (context) {}),
+                      SlidableAction(
+                          icon: Icons.delete,
+                          label: "ลบสินค้า",
+                          backgroundColor: Colors.red,
+                          onPressed: (context) {}),
+                    ],
+                    extentRatio: 0.35,
+                  ),
+                  child: Builder(builder: (context) {
+                    return InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(HeroDialogRoute(
+                          builder: (context) {
+                            return AddAmountProductToCart(
+                                Cartproduct: items![index]);
+                          },
+                        ));
+                        // final slidable = Slidable.of(context);
+                        // slidable?.direction.value == 0
+                        //     ? slidable?.openEndActionPane(
+                        //         duration: const Duration(milliseconds: 500),
+                        //         curve: Curves.decelerate,
+                        //       )
+                        //     : slidable?.close(
+                        //         duration: const Duration(milliseconds: 500),
+                        //         curve: Curves.decelerate,
+                        //       );
+                      },
+                      child: Stack(
                         children: <Widget>[
-                          Expanded(
-                            child: Image.file(
-                              File(items![index]['product']["file_path"]),
-                              height: 100,
-                              width: 200,
-                              errorBuilder: (context, error, stackTrace) {
-                                changeImage(
-                                    items![index]['product']['file_name'],
-                                    index);
-                                return Image.network(
-                                  items![index]['product']['file_name'],
-                                  height: 100,
-                                  width: 200,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Center(
-                                        child: CircularProgressIndicator());
-                                  },
-                                );
-                              },
+                          Container(
+                            height: 125,
+                            decoration: BoxDecoration(
+                              color: blueTextColor,
+                              borderRadius:
+                                  BorderRadius.circular(_borderRadius),
+                              // gradient: LinearGradient(colors: [
+                              //   items[index].startColor,
+                              //   items[index].endColor
+                              // ], begin: Alignment.topLeft, end: Alignment.bottomRight),
+                              boxShadow: [
+                                BoxShadow(
+                                  // color: items[index].endColor,
+                                  color: Colors.grey.withOpacity(0.4),
+                                  blurRadius: 12,
+                                  offset: Offset(0, 6),
+                                ),
+                              ],
                             ),
-                            flex: 4,
                           ),
-                          Expanded(
-                            flex: 4,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                          // Positioned(
+                          //   right: 0,
+                          //   bottom: 0,
+                          //   top: 0,
+                          //   child: CustomPaint(
+                          //     size: Size(100, 150),
+                          //     painter: CustomCardShapePainter(_borderRadius,
+                          //         items[index].startColor, items[index].endColor),
+                          //   ),
+                          // ),
+                          Positioned.fill(
+                            child: Row(
                               children: <Widget>[
-                                Text(
-                                  items![index]['product']["product_name"],
-                                  style: TextStyle(
-                                      color: productTextColor,
-                                      fontFamily: 'LEMONMILKBOLD',
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                Text(
-                                  items![index]['product']["description"],
-                                  style: TextStyle(
-                                    color: productTextColor,
-                                    fontFamily: 'LEMONMILK',
+                                Expanded(
+                                  child: Image.file(
+                                    File(items![index]['product']["file_path"]),
+                                    height: 100,
+                                    width: 200,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      changeImage(
+                                          items![index]['product']['file_name'],
+                                          index);
+                                      return Image.network(
+                                        items![index]['product']['file_name'],
+                                        height: 100,
+                                        width: 200,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return Center(
+                                              child:
+                                                  CircularProgressIndicator());
+                                        },
+                                      );
+                                    },
                                   ),
+                                  flex: 4,
                                 ),
-                                SizedBox(height: 16),
-                                Row(
-                                  children: <Widget>[
-                                    Icon(
-                                      Icons.inbox_outlined,
-                                      color: secondaryProductTextColor,
-                                      size: 16,
-                                    ),
-                                    SizedBox(
-                                      width: 8,
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        items![index]['product']['stock'],
+                                Expanded(
+                                  flex: 4,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: <Widget>[
+                                      Text(
+                                        items![index]['product']
+                                            ["product_name"],
                                         style: TextStyle(
-                                          color: secondaryProductTextColor,
+                                            color: productTextColor,
+                                            fontFamily: 'LEMONMILKBOLD',
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      Text(
+                                        items![index]['product']["description"],
+                                        style: TextStyle(
+                                          color: productTextColor,
                                           fontFamily: 'LEMONMILK',
                                         ),
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(height: 16),
+                                      Row(
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.inbox_outlined,
+                                            color: secondaryProductTextColor,
+                                            size: 16,
+                                          ),
+                                          SizedBox(
+                                            width: 8,
+                                          ),
+                                          Flexible(
+                                            child: Text(
+                                              items![index]['product']['stock'],
+                                              style: TextStyle(
+                                                color:
+                                                    secondaryProductTextColor,
+                                                fontFamily: 'LEMONMILK',
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            flex: 2,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                FlatButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                        HeroDialogRoute(builder: (context) {
-                                      return QrProductDisply(
-                                        qrcode: items![index]['product']
-                                            ['qrcode'],
-                                      );
-                                    }));
-                                  },
-                                  child: Icon(Icons.qr_code),
+                                Expanded(
+                                  flex: 2,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: <Widget>[
+                                      FlatButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                              HeroDialogRoute(
+                                                  builder: (context) {
+                                            return QrProductDisply(
+                                              qrcode: items![index]['product']
+                                                  ['qrcode'],
+                                            );
+                                          }));
+                                        },
+                                        child: Icon(Icons.qr_code),
+                                      ),
+                                      Text(
+                                        "฿" + items![index]['product']['sell'],
+                                        style: TextStyle(
+                                            color: thirdProductTextColor,
+                                            fontFamily: 'LEMONMILKBOLD',
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      // RatingBar(rating: items[index].rating),
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                  "฿" + items![index]['product']['sell'],
-                                  style: TextStyle(
-                                      color: thirdProductTextColor,
-                                      fontFamily: 'LEMONMILKBOLD',
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700),
-                                ),
-                                // RatingBar(rating: items[index].rating),
                               ],
                             ),
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                    );
+                  }),
                 ),
               ),
             );

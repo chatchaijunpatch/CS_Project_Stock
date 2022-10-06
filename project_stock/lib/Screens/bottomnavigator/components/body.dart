@@ -30,13 +30,10 @@ class _BodyState extends State<Body> {
 
   int header = 0;
   int currentIndex = 0;
-  final screens = [StockPage(), SellProductPage(), Container(), Container()];
+  final screens = [StockPage(), SellProductPage(), Container()];
   final unSelectedIcon = [
     Icon(
       Icons.add_business_outlined,
-    ),
-    Icon(
-      Icons.note_outlined,
     ),
     Icon(
       Icons.folder_outlined,
@@ -50,7 +47,6 @@ class _BodyState extends State<Body> {
       Icons.add_business,
       size: 40,
     ),
-    Icon(Icons.note, size: 40),
     Icon(Icons.folder, size: 40),
     Icon(Icons.settings, size: 40),
   ];
@@ -65,7 +61,7 @@ class _BodyState extends State<Body> {
           fontWeight: FontWeight.bold),
     ),
     Text(
-      "SELL",
+      "HISTORY",
       textAlign: TextAlign.center,
       style: TextStyle(
           color: Colors.black,
@@ -188,21 +184,16 @@ class _BodyState extends State<Body> {
               BottomNavigationBarItem(
                 icon: unSelectedIcon[0],
                 activeIcon: SelectedIcon[0],
-                label: "Sell",
+                label: "Stock and Sell",
               ),
               BottomNavigationBarItem(
                 icon: unSelectedIcon[1],
                 activeIcon: SelectedIcon[1],
-                label: "Edit",
+                label: "History",
               ),
               BottomNavigationBarItem(
                 icon: unSelectedIcon[2],
                 activeIcon: SelectedIcon[2],
-                label: "History",
-              ),
-              BottomNavigationBarItem(
-                icon: unSelectedIcon[3],
-                activeIcon: SelectedIcon[3],
                 label: "Setting",
               ),
             ],
