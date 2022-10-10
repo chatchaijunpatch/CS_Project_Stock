@@ -64,7 +64,7 @@ class CartProductState extends State<CartProduct> {
     if (command.toLowerCase() == "ลบสินค้า") {
       setState(() {
         DatabaseService()
-            .DeleteCartProduct(items![index]['cartid'])
+            .DeleteCartProduct(items![index]['cartid'],"cart")
             .then((value) {
           Fluttertoast.showToast(
                   msg:

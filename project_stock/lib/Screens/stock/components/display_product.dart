@@ -2,7 +2,10 @@ import 'dart:io';
 import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:project_stock/Screens/stock/components/add_amount.dart';
+import 'package:project_stock/Screens/stock/components/add_product.dart';
+import 'package:project_stock/Screens/stock/components/edit_product.dart';
 import 'package:project_stock/Screens/stock/components/qr_display.dart';
 import 'package:project_stock/Service/service.dart';
 import 'package:project_stock/components/hero_dialog_route.dart';
@@ -87,12 +90,36 @@ class DisplayProductState extends State<DisplayProduct> {
                           icon: Icons.create,
                           label: "แก้ไข",
                           backgroundColor: Colors.blue,
-                          onPressed: (context) {}),
+                          onPressed: (context) {
+                            // Navigator.of(context).push(HeroDialogRoute(
+                            //   builder: (context) {
+                            //     return EditProductDataPopupCard(
+                            //       product: items![index]['product'],
+                            //     );
+                            //   },
+                            // ));
+                          }),
                       SlidableAction(
                           icon: Icons.delete,
                           label: "ลบสินค้า",
                           backgroundColor: Colors.red,
-                          onPressed: (context) {}),
+                          onPressed: (context) {
+                            DatabaseService()
+                                .DeleteCartProduct(
+                                    items![index]['product']['product_id'],
+                                    "product")
+                                .then((value) {
+                              Fluttertoast.showToast(
+                                      msg:
+                                          "สินค้า ${items![index]['product']['product_name']} ลบสำเร็จ",
+                                      gravity: ToastGravity.CENTER)
+                                  .then((value) {
+                                setState(() {
+                                  fetchProductList();
+                                });
+                              });
+                            });
+                          }),
                     ],
                     extentRatio: 0.35,
                   ),

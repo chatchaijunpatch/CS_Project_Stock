@@ -17,7 +17,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../Service/service.dart';
 
-String _heroAddTodo = 'add-todo-hero';
+String _heroAddTodo = 'display_hero';
 
 class QrProductDisply extends StatefulWidget {
   String? qrcode;

@@ -154,9 +154,9 @@ class DatabaseService {
     });
   }
 
-  Future<void> DeleteCartProduct(dynamic cart_id) async {
+  Future<void> DeleteCartProduct(dynamic cart_id,String type) async {
     final delCartProduct = await _UserColletion.doc(current!.uid)
-        .collection("cart")
+        .collection(type)
         .doc(cart_id)
         .delete();
   }
