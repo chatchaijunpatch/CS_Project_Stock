@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:project_stock/Screens/stock/components/cust_react_tween.dart';
 import 'package:project_stock/components/text_field_container.dart';
@@ -10,6 +11,7 @@ import 'package:project_stock/constants.dart';
 import 'package:project_stock/storage/user.dart';
 
 import '../../../Service/service.dart';
+import '../../bottomnavigator/bottomnav_screen.dart';
 
 String _heroAddTodo = 'add-todo-hero';
 
@@ -240,7 +242,23 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                             formkey.currentState?.save();
                             // print("${profile.product.productname}");
                             // print("${profile.product.filename}");
-                            DatabaseService().UploadProduct(profile);
+                            DatabaseService()
+                                .UploadProduct(profile)
+                                .then((value) {
+                              Fluttertoast.showToast(
+                                      msg: "เพิ่มสินค้าเรียบร้อย",
+                                      gravity: ToastGravity.CENTER)
+                                  .then((value) {
+                                Navigator.of(context)
+                                    .pushReplacement(MaterialPageRoute(
+                                  builder: (context) {
+                                    return MainScreen(
+                                      index: 0,
+                                    );
+                                  },
+                                ));
+                              });
+                            });
                             formkey.currentState!.reset();
                             setState(() {
                               pathimg = "";

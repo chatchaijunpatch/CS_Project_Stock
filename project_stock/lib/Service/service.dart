@@ -103,29 +103,6 @@ class DatabaseService {
           product.add(element.data());
           // print(element.data());
         });
-        // var cart = List.generate(product.length, (index) => List(2),growable: false);
-        // product.sort(((a, b) {
-        //   return int.parse(a['qrcode']).compareTo(int.parse(b['qrcode']));
-        // }));
-        // String collect = '';
-        // int count = -1;
-        // int item = 1;
-        // for (var i = 0; i < product.length; i++) {
-        //   if (product[i]['qrcode'] == collect) {
-        //     item += 1;
-        //     cart[count][1] = item;
-        //   } else {
-        //     item = 1;
-        //     count += 1;
-        //     collect = product[i]['qrcode'];
-        //     cart.add(product[i]);
-        //     print(cart[0]);
-        //     cart[count].add(item);
-        //   }
-        // }
-        // for (var i = 0; i < cart.length; i++) {
-        //   print(cart[i]);
-        // }
       });
     } catch (e) {
       print(e.toString());
@@ -154,7 +131,25 @@ class DatabaseService {
     });
   }
 
-  Future<void> DeleteCartProduct(dynamic cart_id,String type) async {
+  Future<void> UpdateProduct(UserProfile product) async {
+    final updateProduct = await _UserColletion.doc(current!.uid)
+        .collection("product")
+        .doc(product.product.productid)
+        .update(product.ToString())
+        .then((value) async {
+      List cartdemo = await CallCart();
+      for (var cart in cartdemo) {
+        if (product.product.productid == cart['product']['product_id']) {
+          final updateCart = await _UserColletion.doc(current!.uid)
+              .collection("cart")
+              .doc(cart['cartid'])
+              .update(product.ToString());
+        }
+      }
+    });
+  }
+
+  Future<void> DeleteCartProduct(dynamic cart_id, String type) async {
     final delCartProduct = await _UserColletion.doc(current!.uid)
         .collection(type)
         .doc(cart_id)

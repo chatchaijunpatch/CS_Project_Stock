@@ -64,7 +64,7 @@ class CartProductState extends State<CartProduct> {
     if (command.toLowerCase() == "ลบสินค้า") {
       setState(() {
         DatabaseService()
-            .DeleteCartProduct(items![index]['cartid'],"cart")
+            .DeleteCartProduct(items![index]['cartid'], "cart")
             .then((value) {
           Fluttertoast.showToast(
                   msg:
@@ -351,13 +351,27 @@ class CartProductState extends State<CartProduct> {
                         width: 20,
                       ),
                       RaisedButton(
-                        onPressed: () {
-                          Navigator.push(context,
-                              HeroDialogRoute(builder: (context) {
-                            return PaymentScreen(
-                              total: total,
-                            );
-                          }));
+                        onPressed: () async {
+                          int set = 1;
+                          for (var cart in items!) {
+                            if (int.parse(cart['amount']) >
+                                int.parse(cart['product']['stock'])) {
+                              set = 0;
+                              break;
+                            }
+                          }
+                          if (set == 0) {
+                            Fluttertoast.showToast(
+                                msg: "จำนวนสินค้ามีมากกว่าจำนวนในคลัง",
+                                gravity: ToastGravity.CENTER);
+                          } else {
+                            Navigator.push(context,
+                                HeroDialogRoute(builder: (context) {
+                              return PaymentScreen(
+                                total: total,
+                              );
+                            }));
+                          }
                         },
                         child: Text(
                           "ชำระเงิน",

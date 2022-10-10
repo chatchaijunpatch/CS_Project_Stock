@@ -91,13 +91,13 @@ class DisplayProductState extends State<DisplayProduct> {
                           label: "แก้ไข",
                           backgroundColor: Colors.blue,
                           onPressed: (context) {
-                            // Navigator.of(context).push(HeroDialogRoute(
-                            //   builder: (context) {
-                            //     return EditProductDataPopupCard(
-                            //       product: items![index]['product'],
-                            //     );
-                            //   },
-                            // ));
+                            Navigator.of(context).push(HeroDialogRoute(
+                              builder: (context) {
+                                return EditProductDataPopupCard(
+                                  product: items![index]['product'],
+                                );
+                              },
+                            ));
                           }),
                       SlidableAction(
                           icon: Icons.delete,

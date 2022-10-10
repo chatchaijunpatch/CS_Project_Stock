@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:project_stock/Screens/stock/components/cust_react_tween.dart';
 import 'package:project_stock/components/text_field_container.dart';
@@ -10,6 +12,7 @@ import 'package:project_stock/constants.dart';
 import 'package:project_stock/storage/user.dart';
 
 import '../../../Service/service.dart';
+import '../../bottomnavigator/bottomnav_screen.dart';
 
 String _heroAddTodo = 'add-todo-hero';
 
@@ -25,11 +28,14 @@ class EditProductDataPopupCard extends StatefulWidget {
 UserProfile profile = UserProfile();
 
 class _EditProductDataPopupCardState extends State<EditProductDataPopupCard> {
+  final current = FirebaseAuth.instance.currentUser;
   dynamic p;
+  late final String nname;
   final formkey = GlobalKey<FormState>();
   @override
   void initState() {
     p = widget.product!;
+    nname = widget.product!['file_name'].toString();
     super.initState();
     fetchDatabaseList();
   }
@@ -103,39 +109,39 @@ class _EditProductDataPopupCardState extends State<EditProductDataPopupCard> {
                               }
                               final path = results.files.single.path!;
                               final fileName = results.files.single.name;
-
                               setState(() {
                                 pathimg = path;
-                                if (path == null) {
-                                  profile.product.filename =
-                                      p['file_name'].toString();
-                                  profile.product.filepath =
-                                      p['file_path'].toString();
-                                } else {
-                                  profile.product.filename = fileName;
-                                  profile.product.filepath = path;
-                                }
+                                profile.product.filename = fileName;
+                                profile.product.filepath = path;
                               });
                               // storage.uploadFile(path,fileName).then((value) => print("Done"),);
                               // print(fileName);
                               // print(myStudent.storage.filePath+"/"+myStudent.storage.fileName);
                             },
                             child: Image.file(
-                              File(p['file_path']),
+                              File(pathimg),
                               width: 250,
                               height: 250,
-                              errorBuilder: ((context, error, stackTrace) {
-                                changeImage(p['file_name']);
-                                return Image.network(
-                                  p['file_name'].toString(),
+                              errorBuilder: (context, error, stackTrace) {
+                                return Image.file(
+                                  File(p['file_path']),
                                   width: 250,
                                   height: 250,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Center(
-                                        child: CircularProgressIndicator());
-                                  },
+                                  errorBuilder: ((context, error, stackTrace) {
+                                    changeImage(p['file_name']);
+                                    return Image.network(
+                                      p['file_name'].toString(),
+                                      width: 250,
+                                      height: 250,
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Center(
+                                            child: CircularProgressIndicator());
+                                      },
+                                    );
+                                  }),
                                 );
-                              }),
+                              },
                             ),
                           ),
                         ),
@@ -301,18 +307,53 @@ class _EditProductDataPopupCardState extends State<EditProductDataPopupCard> {
                           formkey.currentState?.save();
                           if (formkey.currentState?.validate() == true) {
                             formkey.currentState?.save();
-                            print("${profile.product.productname}");
-                            print("${profile.product.filename}");
-                            // DatabaseService().UploadProduct(profile);
-                            // formkey.currentState!.reset();
-                            // setState(() {
-                            //   pathimg = "";
-                            // });
+                            if (profile.product.filename == null) {
+                              profile.product.filename = nname;
+                              profile.product.filepath =
+                                  p['file_path'].toString();
+                            }
+                            profile.product.productid =
+                                p['product_id'].toString();
+                            profile.product.qrcode = p['qrcode'].toString();
+                            profile.userid = current!.uid;
+
+                            DatabaseService()
+                                .UpdateProduct(profile)
+                                .then((value) {
+                              Fluttertoast.showToast(
+                                      msg: "สินค้าถูกแก้ไขเรียบร้อย",
+                                      gravity: ToastGravity.CENTER)
+                                  .then((value) {
+                                Navigator.of(context)
+                                    .pushReplacement(MaterialPageRoute(
+                                  builder: (context) {
+                                    return MainScreen(
+                                      index: 0,
+                                    );
+                                  },
+                                ));
+                              });
+                            });
+                            formkey.currentState!.reset();
+                            setState(() {
+                              p['file_path'] =
+                                  profile.product.filepath.toString();
+                              p['file_name'] =
+                                  profile.product.filename.toString();
+                              p['sell'] = profile.product.sell.toString();
+                              p['cost'] = profile.product.cost.toString();
+                              p['stock'] = profile.product.stock.toString();
+                              p['description'] =
+                                  profile.product.description.toString();
+                              p['product_name'] =
+                                  profile.product.productname.toString();
+                              pathimg = "";
+                            });
                           }
                         },
                         color: Colors.black,
                         child: const Text(
-                          'เพิ่มสินค้า',
+                          'แก้ไขสินค้า',
                           style: TextStyle(color: Colors.white),
                         ),
                       ),
