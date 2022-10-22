@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:project_stock/storage/cart.dart';
+import 'package:project_stock/storage/history.dart';
 import 'package:project_stock/storage/product.dart';
 
 class UserProfile {
@@ -10,6 +11,7 @@ class UserProfile {
   String? userid;
   Product product = Product();
   Cart cart = Cart();
+  History history = History();
   UserProfile();
 
   UserProfile.fromSnapshot(

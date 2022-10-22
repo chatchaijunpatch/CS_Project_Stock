@@ -75,7 +75,7 @@ class DatabaseService {
           .then((querySnapshot) {
         querySnapshot.docs.forEach((element) {
           product.add(element.data());
-          print(element.data());
+          // print(element.data());
         });
       });
       // .then((value) async {
@@ -191,6 +191,19 @@ class DatabaseService {
         await _UserColletion.doc(current!.uid).collection("cart").doc();
     profile.cart.cartid = docCart.id;
     await docCart.set(profile.cart.ToString());
+  }
+
+  UploadHistory(UserProfile profile, status) async {
+    profile.userid = current!.uid;
+    final docProduct =
+        await _UserColletion.doc(current!.uid).collection("history").doc();
+    profile.history.historyid = docProduct.id;
+    profile.history.date = new DateTime.now();
+    profile.history.status = status;
+    profile.history.product = profile.product;
+    if (status == "upload") {
+      await docProduct.set(profile.history.ToUpload());
+    }
   }
 
   Future<void> uploadFile(String filepath, String filename) async {

@@ -245,6 +245,9 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                             DatabaseService()
                                 .UploadProduct(profile)
                                 .then((value) {
+                              DatabaseService()
+                                  .UploadHistory(profile, "upload");
+                            }).then((value) {
                               Fluttertoast.showToast(
                                       msg: "เพิ่มสินค้าเรียบร้อย",
                                       gravity: ToastGravity.CENTER)
