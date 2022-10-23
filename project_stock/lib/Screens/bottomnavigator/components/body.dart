@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:project_stock/Screens/cart/cart_screen.dart';
+import 'package:project_stock/Screens/history/history_screen.dart';
 import 'package:project_stock/Screens/login/login_screen.dart';
 import 'package:project_stock/Screens/sell/sell_product_screen.dart';
 import 'package:project_stock/Screens/stock/stock_screen.dart';
@@ -30,7 +31,7 @@ class _BodyState extends State<Body> {
 
   int header = 0;
   int currentIndex = 0;
-  final screens = [StockPage(), SellProductPage(), Container()];
+  final screens = [StockPage(), History_Page(), Container()];
   final unSelectedIcon = [
     Icon(
       Icons.add_business_outlined,

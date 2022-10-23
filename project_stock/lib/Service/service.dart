@@ -112,6 +112,29 @@ class DatabaseService {
     return product;
   }
 
+  Future CallHistory(String status) async {
+    List product = [];
+    try {
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(current!.uid)
+          .collection("history")
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((element) {
+          if (element.data()['status'] == status) {
+            product.add(element.data());
+          }
+          // print(element.data());
+        });
+      });
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+    return product;
+  }
+
   Future<void> UploadProduct(UserProfile profile) async {
     var intValue = Random().nextInt(4294967296);
     profile.userid = current!.uid;
