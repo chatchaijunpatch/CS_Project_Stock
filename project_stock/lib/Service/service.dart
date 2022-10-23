@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart' as firebase_core;
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image/image.dart';
+import 'package:project_stock/storage/history.dart';
 import 'package:project_stock/storage/product.dart';
 import 'package:project_stock/storage/user.dart';
 
@@ -131,7 +132,8 @@ class DatabaseService {
     });
   }
 
-  Future<void> UpdateProduct(UserProfile product) async {
+  Future<void> UpdateProduct(
+      UserProfile product, UserProfile oldproduct) async {
     final updateProduct = await _UserColletion.doc(current!.uid)
         .collection("product")
         .doc(product.product.productid)
@@ -144,8 +146,11 @@ class DatabaseService {
               .collection("cart")
               .doc(cart['cartid'])
               .update(product.ToString());
+          break;
         }
       }
+    }).then((value) async {
+      await UploadHistory(oldproduct, "edit");
     });
   }
 
@@ -193,16 +198,55 @@ class DatabaseService {
     await docCart.set(profile.cart.ToString());
   }
 
-  UploadHistory(UserProfile profile, status) async {
-    profile.userid = current!.uid;
+  Future<void> UploadHistory(UserProfile? profile, status) async {
     final docProduct =
         await _UserColletion.doc(current!.uid).collection("history").doc();
-    profile.history.historyid = docProduct.id;
-    profile.history.date = new DateTime.now();
-    profile.history.status = status;
-    profile.history.product = profile.product;
-    if (status == "upload") {
+    // ignore: unrelated_type_equality_checks
+    if (status == "upload" || status == "edit") {
+      profile!.userid = current!.uid;
+      profile.history.historyid = docProduct.id;
+      profile.history.date = new DateTime.now();
+      profile.history.status = status;
+      profile.history.product = profile.product;
       await docProduct.set(profile.history.ToUpload());
+    } else if (status == "payment") {
+      List cart = await CallCart();
+      History his = new History();
+      his.cart = cart;
+      his.historyid = docProduct.id;
+      his.date = new DateTime.now();
+      his.status = status;
+      await docProduct.set(his.ToPayment()).then((value) async {
+        final batch = FirebaseFirestore.instance.batch();
+        dynamic collection =
+            _UserColletion.doc(current!.uid).collection('cart');
+
+        dynamic snaps = await collection.get();
+        for (dynamic doc in snaps.docs) {
+          String result =
+              (int.parse(doc['product']['stock']) - int.parse(doc['amount']))
+                  .toString();
+          await _UserColletion.doc(current!.uid)
+              .collection("product")
+              .doc(doc['product']['product_id'])
+              .update({
+            "user_id": current!.uid,
+            "product": {
+              "cost": doc['product']['cost'],
+              "description": doc['product']['description'],
+              "file_name": doc['product']['file_name'],
+              "file_path": doc["product"]["file_path"],
+              "product_id": doc['product']['product_id'],
+              "product_name": doc['product']['product_name'],
+              "qrcode": doc["product"]['qrcode'],
+              "sell": doc["product"]["sell"],
+              "stock": result,
+            }
+          });
+          batch.delete(doc.reference);
+        }
+        await batch.commit();
+      });
     }
   }
 

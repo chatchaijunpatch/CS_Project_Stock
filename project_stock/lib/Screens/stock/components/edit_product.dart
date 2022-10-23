@@ -31,11 +31,22 @@ class _EditProductDataPopupCardState extends State<EditProductDataPopupCard> {
   final current = FirebaseAuth.instance.currentUser;
   dynamic p;
   late final String nname;
+  late final UserProfile old;
   final formkey = GlobalKey<FormState>();
   @override
   void initState() {
     p = widget.product!;
     nname = widget.product!['file_name'].toString();
+    old = new UserProfile();
+    old.product.cost = widget.product!['cost'].toString();
+    old.product.description = widget.product!['description'].toString();
+    old.product.filename = widget.product!['file_name'].toString();
+    old.product.filepath = widget.product!['file_path'].toString();
+    old.product.productid = widget.product!['product_id'].toString();
+    old.product.productname = widget.product!['product_name'].toString();
+    old.product.qrcode = widget.product!['qrcode'].toString();
+    old.product.sell = widget.product!['sell'].toString();
+    old.product.stock = widget.product!['stock'].toString();
     super.initState();
     fetchDatabaseList();
   }
@@ -318,7 +329,7 @@ class _EditProductDataPopupCardState extends State<EditProductDataPopupCard> {
                             profile.userid = current!.uid;
 
                             DatabaseService()
-                                .UpdateProduct(profile)
+                                .UpdateProduct(profile, old)
                                 .then((value) {
                               Fluttertoast.showToast(
                                       msg: "สินค้าถูกแก้ไขเรียบร้อย",

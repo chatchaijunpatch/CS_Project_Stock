@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:project_stock/Service/service.dart';
 import 'package:project_stock/components/text_field_container.dart';
 
+import '../../bottomnavigator/bottomnav_screen.dart';
 import '../../stock/components/cust_react_tween.dart';
 
 class CashPayment extends StatefulWidget {
@@ -88,11 +90,24 @@ class _CashPaymentState extends State<CashPayment> {
                       onPressed: () {
                         formKey.currentState?.save();
                         if (formKey.currentState!.validate()) {
-        
-                          Fluttertoast.showToast(
-                              msg: "ทอนทั้งหมด" +
-                                  (cash - total!.toInt()).toString(),
-                              gravity: ToastGravity.CENTER);
+                          DatabaseService()
+                              .UploadHistory(null, "payment")
+                              .then((value) {
+                            Fluttertoast.showToast(
+                                    msg: "ทอนทั้งหมด" +
+                                        (cash - total!.toInt()).toString(),
+                                    gravity: ToastGravity.CENTER)
+                                .then((value) {
+                              Navigator.of(context)
+                                  .pushReplacement(MaterialPageRoute(
+                                builder: (context) {
+                                  return MainScreen(
+                                    index: 0,
+                                  );
+                                },
+                              ));
+                            });
+                          });
                         }
                       },
                       child: Text("ยืนยันการชำระเงิน"),
