@@ -238,8 +238,10 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                       FlatButton(
                         onPressed: () async {
                           formkey.currentState?.save();
-                          if (formkey.currentState?.validate() == true) {
+                          if (formkey.currentState?.validate() == true &&
+                              profile.product.filepath != null) {
                             formkey.currentState?.save();
+
                             // print("${profile.product.productname}");
                             // print("${profile.product.filename}");
                             DatabaseService()
@@ -266,6 +268,10 @@ class _AddProductPopupCardState extends State<AddProductPopupCard> {
                             setState(() {
                               pathimg = "";
                             });
+                          } else {
+                            Fluttertoast.showToast(
+                                msg: "กรุณาใส่รูปภาพ",
+                                gravity: ToastGravity.CENTER);
                           }
                         },
                         color: Colors.black,

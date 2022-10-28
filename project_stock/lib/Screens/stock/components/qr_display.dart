@@ -5,6 +5,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
@@ -64,8 +65,10 @@ class _QrProductDisplyState extends State<QrProductDisply> {
           '$directory/${DateTime.now()}${widget.qrcode}.png',
         );
         imgFile.writeAsBytes(pngBytes);
-        GallerySaver.saveImage(imgFile.path).then((success) async {
+        GallerySaver.saveImage(imgFile.path).then((success) {
           //In here you can show snackbar or do something in the backend at successfull download
+          Fluttertoast.showToast(
+              msg: "ดาวโหลดเรียบร้อย", gravity: ToastGravity.CENTER);
         });
       }
     }

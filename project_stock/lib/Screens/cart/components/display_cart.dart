@@ -365,12 +365,18 @@ class CartProductState extends State<CartProduct> {
                                 msg: "จำนวนสินค้ามีมากกว่าจำนวนในคลัง",
                                 gravity: ToastGravity.CENTER);
                           } else {
-                            Navigator.push(context,
-                                HeroDialogRoute(builder: (context) {
-                              return PaymentScreen(
-                                total: total,
-                              );
-                            }));
+                            if (total == 0 && items!.length == 0) {
+                              Fluttertoast.showToast(
+                                  msg: "ไม่มีสินค้าในตะกร้า",
+                                  gravity: ToastGravity.CENTER);
+                            } else {
+                              Navigator.push(context,
+                                  HeroDialogRoute(builder: (context) {
+                                return PaymentScreen(
+                                  total: total,
+                                );
+                              }));
+                            }
                           }
                         },
                         child: Text(
