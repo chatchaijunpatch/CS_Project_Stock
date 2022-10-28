@@ -251,10 +251,17 @@ class DisplayProductState extends State<DisplayProduct> {
                                   ),
                                 ),
                                 Expanded(
-                                  flex: 2,
+                                  flex: 3,
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
                                     children: <Widget>[
+                                      Text(
+                                        items![index]['product']["product_id"],
+                                        style: TextStyle(
+                                            color: productTextColor,
+                                            fontSize: 10,
+                                            fontFamily: 'LEMONMILKBOLD'),
+                                      ),
                                       FlatButton(
                                         onPressed: () {
                                           Navigator.of(context).push(

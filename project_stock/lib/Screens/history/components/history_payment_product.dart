@@ -6,16 +6,17 @@ import 'package:flutter/material.dart';
 import '../../../Service/service.dart';
 import '../../../constants.dart';
 
-class HistoryAddProduct extends StatefulWidget {
-  const HistoryAddProduct({Key? key}) : super(key: key);
+class HistoryPayment extends StatefulWidget {
+  dynamic p;
+  HistoryPayment({Key? key, dynamic p}) : super(key: key);
 
   @override
-  State<HistoryAddProduct> createState() => _HistoryAddProductState();
+  State<HistoryPayment> createState() => _HistoryAddProductState();
 }
 
 final auth = FirebaseAuth.instance;
 
-class _HistoryAddProductState extends State<HistoryAddProduct> {
+class _HistoryAddProductState extends State<HistoryPayment> {
   changeImage(String name, int index) async {
     String change = await DatabaseService().getImage(name);
     setState(() {
@@ -38,7 +39,7 @@ class _HistoryAddProductState extends State<HistoryAddProduct> {
 
   fetchData() async {
     dynamic product =
-        await DatabaseService().CallHistory("upload").then((value) {
+        await DatabaseService().CallHistory("payment").then((value) {
       setState(() {
         his = value;
       });
@@ -98,66 +99,52 @@ class _HistoryAddProductState extends State<HistoryAddProduct> {
   //   );
   // }
   Widget _buildPlayerModelList(int index) {
+    var _pageSize = MediaQuery.of(context).size.height;
+    var _notifySize = MediaQuery.of(context).padding.top;
     return Container(
       child: Card(
         child: ExpansionTile(
-          title: Text(
-              "เพิ่มสินค้าใหม่รหัส" + his![index]['product']['product_id']),
+          title: Text("รหัสการชำระเงิน " + his![index]['historyid']),
           subtitle:
               Text(DateTime.parse(his![index]['date'].toString()).toString()),
           children: [
-            Image.file(
-              File(his![index]['product']["file_path"]),
-              height: 100,
-              width: 200,
-              errorBuilder: (context, error, stackTrace) {
-                changeImage(his![index]['product']['file_name'], index);
-                return Image.network(
-                  his![index]['product']['file_name'],
-                  height: 100,
-                  width: 200,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Center(child: CircularProgressIndicator());
-                  },
-                );
-              },
+            Container(
+              height: 50,
+              child: ListView.builder(
+                  itemCount: getLength(index),
+                  itemBuilder: ((context, index2) {
+                    return Column(
+                      children: [
+                        Text(his![index]['cart'][index2]['product']
+                                ['product_id'] +
+                            " x "
+                                " จำนวน " +
+                            his![index]['cart'][index2]['amount'] +
+                            " x " +
+                            " ฿" +
+                            his![index]['cart'][index2]['product']['sell'])
+                      ],
+                    );
+                  })),
             ),
-            Text("ชื่อสินค้า " + his![index]['product']["product_name"],
-                style: TextStyle(
-                  color: productTextColor,
-                  fontFamily: 'LEMONMILK',
-                )),
-            Text(
-              "คำอธิบาย " + his![index]['product']["description"],
-              style: TextStyle(
-                color: productTextColor,
-                fontFamily: 'LEMONMILK',
-              ),
-            ),
-            Text(
-              "จำนวน " + his![index]['product']["stock"],
-              style: TextStyle(
-                color: productTextColor,
-                fontFamily: 'LEMONMILK',
-              ),
-            ),
-            Text(
-              "ราคาต้นทุน " + his![index]['product']["cost"],
-              style: TextStyle(
-                color: productTextColor,
-                fontFamily: 'LEMONMILK',
-              ),
-            ),
-            Text(
-              "ราคาขาย " + his![index]['product']["sell"],
-              style: TextStyle(
-                color: productTextColor,
-                fontFamily: 'LEMONMILK',
-              ),
-            ),
+            Text("ราคาทั้งหมด ฿" + getTotal(index).toString()),
           ],
         ),
       ),
     );
+  }
+
+  getTotal(int index) {
+    int total = 0;
+    for (var element in his![index]['cart']) {
+      total += (int.parse(element['amount']) *
+          int.parse(element['product']['sell']));
+    }
+    return total;
+  }
+
+  getLength(int index) {
+    final dynamic rest = his![index]['cart'];
+    return rest.length;
   }
 }

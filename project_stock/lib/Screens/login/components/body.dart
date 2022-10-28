@@ -7,6 +7,7 @@ import 'package:form_field_validator/form_field_validator.dart';
 import 'package:project_stock/Screens/login/components/background.dart';
 import 'package:project_stock/Screens/stock/stock_screen.dart';
 import 'package:project_stock/components/rounded_button.dart';
+import 'package:project_stock/components/text_field_container.dart';
 import 'package:project_stock/constants.dart';
 
 import '../../../components/already_have_account.dart';
@@ -16,11 +17,14 @@ import '../../../storage/user.dart';
 import '../../bottomnavigator/bottomnav_screen.dart';
 import '../../signup/signup_screen.dart';
 
-class Body extends StatelessWidget {
-  const Body({
-    Key? key,
-  }) : super(key: key);
+class Body extends StatefulWidget {
+  Body({Key? key}) : super(key: key);
 
+  @override
+  State<Body> createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
     UserProfile profile = UserProfile();
@@ -81,7 +85,8 @@ class Body extends StatelessWidget {
               color: brownPrimaryColor,
               righticon: Icon(null),
             ),
-            PasswordField(
+
+            new PasswordField(
               hintText: "Password",
               validate: RequiredValidator(errorText: "กรุณาป้อน Password"),
               booleanstate: true,
@@ -106,10 +111,11 @@ class Body extends StatelessWidget {
                   try {
                     print(profile.email);
                     print(profile.password);
-                    
+
                     await FirebaseAuth.instance
                         .signInWithEmailAndPassword(
-                            email: profile.email.toString(), password: profile.password.toString())
+                            email: profile.email.toString(),
+                            password: profile.password.toString())
                         .then((value) {
                       formKey.currentState!.reset();
                       Navigator.pushReplacement(context,
@@ -118,7 +124,6 @@ class Body extends StatelessWidget {
                       }));
                     });
                   } on FirebaseAuthException catch (e) {
-                    
                     Fluttertoast.showToast(
                         msg: e.message!, gravity: ToastGravity.CENTER);
 

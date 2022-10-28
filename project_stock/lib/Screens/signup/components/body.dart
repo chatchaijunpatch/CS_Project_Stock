@@ -97,7 +97,7 @@ class Body extends StatelessWidget {
               textInputType: TextInputType.emailAddress,
             ),
 
-            PasswordField(
+            new PasswordField(
               validate: RequiredValidator(errorText: "กรุณาป้อน Password"),
               hintText: "Password",
               booleanstate: true,
@@ -115,7 +115,7 @@ class Body extends StatelessWidget {
               ),
             ),
 
-            PasswordField(
+        new PasswordField(
               hintText: "Confirm Password",
               validate: RequiredValidator(errorText: "กรุณาป้อน Password"),
               booleanstate: true,
@@ -142,7 +142,8 @@ class Body extends StatelessWidget {
                     try {
                       await FirebaseAuth.instance
                           .createUserWithEmailAndPassword(
-                              email: profile.email.toString(), password: profile.password.toString())
+                              email: profile.email.toString(),
+                              password: profile.password.toString())
                           .then((value) => {
                                 DatabaseService().CreateProfile(profile),
                                 formKey.currentState!.reset(),

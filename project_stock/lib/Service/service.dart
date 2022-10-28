@@ -124,7 +124,7 @@ class DatabaseService {
         querySnapshot.docs.forEach((element) {
           if (element.data()['status'] == status) {
             product.add(element.data());
-          }
+           }
           // print(element.data());
         });
       });

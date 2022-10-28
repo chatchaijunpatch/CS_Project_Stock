@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project_stock/Screens/history/components/history_add_product.dart';
+import 'package:project_stock/Screens/history/components/history_payment_product.dart';
+
+import 'history_eidt_product.dart';
 
 class Body extends StatefulWidget {
   Body({Key? key}) : super(key: key);
@@ -24,9 +27,9 @@ class _BodyState extends State<Body> {
     if (index == 0) {
       return HistoryAddProduct();
     } else if (index == 1) {
-      return Container();
-    } else if (index == 2){
-      return Container();
+      return HistoryEditProduct();
+    } else if (index == 2) {
+      return HistoryPayment();
     }
   }
 

@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 import '../../../Service/service.dart';
 import '../../../constants.dart';
 
-class HistoryAddProduct extends StatefulWidget {
-  const HistoryAddProduct({Key? key}) : super(key: key);
+class HistoryEditProduct extends StatefulWidget {
+  const HistoryEditProduct({Key? key}) : super(key: key);
 
   @override
-  State<HistoryAddProduct> createState() => _HistoryAddProductState();
+  State<HistoryEditProduct> createState() => _HistoryAddProductState();
 }
 
 final auth = FirebaseAuth.instance;
 
-class _HistoryAddProductState extends State<HistoryAddProduct> {
+class _HistoryAddProductState extends State<HistoryEditProduct> {
   changeImage(String name, int index) async {
     String change = await DatabaseService().getImage(name);
     setState(() {
@@ -37,8 +37,7 @@ class _HistoryAddProductState extends State<HistoryAddProduct> {
   }
 
   fetchData() async {
-    dynamic product =
-        await DatabaseService().CallHistory("upload").then((value) {
+    dynamic product = await DatabaseService().CallHistory("edit").then((value) {
       setState(() {
         his = value;
       });

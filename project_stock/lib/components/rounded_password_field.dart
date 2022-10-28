@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:project_stock/components/text_field_container.dart';
 import 'package:project_stock/constants.dart';
 
-var obscureText = false;
+bool? obscureText;
 
 class PasswordField extends StatefulWidget {
   final String hintText;
@@ -12,7 +12,7 @@ class PasswordField extends StatefulWidget {
   final Color color;
   final Icon lefticon;
   final Icon righticon;
- final String? Function(String?)? validate;
+  final String? Function(String?)? validate;
 
   final ValueChanged<String> onChanged;
   const PasswordField({
@@ -22,24 +22,27 @@ class PasswordField extends StatefulWidget {
     required this.onChanged,
     required this.righticon,
     required this.booleanstate,
-    required this.lefticon, 
+    required this.lefticon,
     this.validate,
   }) : super(key: key);
   @override
   _PasswordField createState() => _PasswordField();
-  @override
-  void initState() {
-    obscureText = !booleanstate;
-  }
 }
 
 class _PasswordField extends State<PasswordField> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    obscureText = widget.booleanstate;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       child: TextFormField(
         validator: widget.validate,
-        obscureText: obscureText, //เป็นรูปแบบ password visible
+        obscureText: obscureText!, //เป็นรูปแบบ password visible
         onChanged: widget.onChanged,
         decoration: InputDecoration(
           hintText: widget.hintText,
@@ -49,11 +52,11 @@ class _PasswordField extends State<PasswordField> {
               // child: widget.righticon,
               onTap: () {
                 setState(() {
-                  obscureText = !obscureText;
+                  obscureText = !obscureText!;
                 });
               },
-              child: obscureText
-                  ?const Icon(
+              child: obscureText!
+                  ? const Icon(
                       Icons.visibility_off,
                       color: brownSecondaryColor,
                     )
