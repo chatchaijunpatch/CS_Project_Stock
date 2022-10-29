@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:project_stock/components/shapespainter.dart';
 import 'package:project_stock/storage/product.dart';
@@ -171,23 +172,25 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
 
   void onQRViewCreated(QRViewController controller) async {
     this.controller = controller;
-    controller.scannedDataStream.listen((event) {
+    controller.scannedDataStream.listen((event) async {
       setState(() {
         result = event;
-        waitTime();
+        // waitTime();
       });
-    }).onDone(() {
-      setState(() {
-        waitTime();
-      });
+      await waitTime();
     });
+
     // setState(() {
     //   waitTime(t);
     // });
   }
 
+  AddProduct() async {
+    await addToCart(result);
+  }
+
   waitTime() async {
-    await Future.delayed(Duration(seconds: 3)).then((value) async{
+    await Future.delayed(Duration(seconds: 3)).then((value) async {
       await addToCart(result);
     }).then((value) {
       setState(() {
@@ -196,6 +199,7 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
     }).then((value) async {
       await Future.delayed(Duration(seconds: 3));
     });
+
     // addToCart(result);
     // setState(() {
     //   result = null;
@@ -221,7 +225,11 @@ class _QrCodeScannerState extends State<QrCodeScanner> {
           profile.cart.product = p;
           profile.userid = current!.uid;
           profile.cart.amount = "1";
-          await DatabaseService().UploadCart(profile);
+          await DatabaseService().UploadCart(profile).then((value) {
+            Fluttertoast.showToast(
+                msg: "เพิ่มใส่ตะกร้าเรียบร้อย", gravity: ToastGravity.CENTER);
+          });
+          break;
         }
       }
     }
