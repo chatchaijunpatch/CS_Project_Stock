@@ -166,6 +166,7 @@ class _EditProductDataPopupCardState extends State<EditProductDataPopupCard> {
                             fontWeight: FontWeight.bold,
                             fontFamily: "LEMONMILKBOLD"),
                       ),
+                      Text("ชื่อสินค้า"),
                       TextFieldContainer(
                         color: blueTextColor,
                         child: TextFormField(
@@ -192,6 +193,7 @@ class _EditProductDataPopupCardState extends State<EditProductDataPopupCard> {
                           },
                         ),
                       ),
+                      Text("คำอธิบาย"),
                       TextFieldContainer(
                         color: blueTextColor,
                         child: TextFormField(
@@ -218,6 +220,7 @@ class _EditProductDataPopupCardState extends State<EditProductDataPopupCard> {
                           },
                         ),
                       ),
+                      Text("จำนวนในคลังสินค้า"),
                       TextFieldContainer(
                         color: blueTextColor,
                         child: TextFormField(
@@ -244,6 +247,7 @@ class _EditProductDataPopupCardState extends State<EditProductDataPopupCard> {
                           },
                         ),
                       ),
+                      Text("ราคาต้นทุน"),
                       TextFieldContainer(
                         color: blueTextColor,
                         child: TextFormField(
@@ -270,6 +274,7 @@ class _EditProductDataPopupCardState extends State<EditProductDataPopupCard> {
                           },
                         ),
                       ),
+                      Text("ราคาขาย"),
                       TextFieldContainer(
                         color: blueTextColor,
                         child: TextFormField(

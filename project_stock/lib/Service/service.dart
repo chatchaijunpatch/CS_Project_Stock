@@ -124,7 +124,7 @@ class DatabaseService {
         querySnapshot.docs.forEach((element) {
           if (element.data()['status'] == status) {
             product.add(element.data());
-           }
+          }
           // print(element.data());
         });
       });
@@ -132,6 +132,11 @@ class DatabaseService {
       print(e.toString());
       return null;
     }
+    product.sort((a, b) {
+      int aDate = DateTime.parse(a['date'].toString()).microsecondsSinceEpoch;
+      int bDate = DateTime.parse(b['date'].toString()).microsecondsSinceEpoch;
+      return bDate.compareTo(aDate);
+    });
     return product;
   }
 
