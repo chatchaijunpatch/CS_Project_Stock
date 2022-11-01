@@ -31,7 +31,9 @@ class _BodyState extends State<Body> {
 
   int header = 0;
   int currentIndex = 0;
-  final screens = [StockPage(), History_Page(), Container()];
+  final screens = [StockPage(), History_Page(),
+   //Container()
+   ];
   final unSelectedIcon = [
     Icon(
       Icons.add_business_outlined,
@@ -39,9 +41,9 @@ class _BodyState extends State<Body> {
     Icon(
       Icons.folder_outlined,
     ),
-    Icon(
-      Icons.settings_outlined,
-    ),
+    // Icon(
+    //   Icons.settings_outlined,
+    // ),
   ];
   final SelectedIcon = [
     Icon(
@@ -49,7 +51,7 @@ class _BodyState extends State<Body> {
       size: 40,
     ),
     Icon(Icons.folder, size: 40),
-    Icon(Icons.settings, size: 40),
+    // Icon(Icons.settings, size: 40),
   ];
   final titleScreen = [
     Text(
@@ -70,22 +72,22 @@ class _BodyState extends State<Body> {
           fontSize: 25,
           fontWeight: FontWeight.bold),
     ),
-    Text(
-      "YOUR STOCKIE",
-      style: TextStyle(
-          color: Colors.black,
-          fontFamily: "LEMONMILKBOLD",
-          fontSize: 25,
-          fontWeight: FontWeight.bold),
-    ),
-    Text(
-      "SELL",
-      style: TextStyle(
-          color: Colors.black,
-          fontFamily: "LEMONMILKBOLD",
-          fontSize: 25,
-          fontWeight: FontWeight.bold),
-    )
+    // Text(
+    //   "YOUR STOCKIE",
+    //   style: TextStyle(
+    //       color: Colors.black,
+    //       fontFamily: "LEMONMILKBOLD",
+    //       fontSize: 25,
+    //       fontWeight: FontWeight.bold),
+    // ),
+    // Text(
+    //   "SELL",
+    //   style: TextStyle(
+    //       color: Colors.black,
+    //       fontFamily: "LEMONMILKBOLD",
+    //       fontSize: 25,
+    //       fontWeight: FontWeight.bold),
+    // )
   ];
   changePage() {
     if (header == 0) {
@@ -192,11 +194,11 @@ class _BodyState extends State<Body> {
                 activeIcon: SelectedIcon[1],
                 label: "History",
               ),
-              BottomNavigationBarItem(
-                icon: unSelectedIcon[2],
-                activeIcon: SelectedIcon[2],
-                label: "Setting",
-              ),
+              // BottomNavigationBarItem(
+              //   icon: unSelectedIcon[2],
+              //   activeIcon: SelectedIcon[2],
+              //   label: "Setting",
+              // ),
             ],
           ),
         )); //);

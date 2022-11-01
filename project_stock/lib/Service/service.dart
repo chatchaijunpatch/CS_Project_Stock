@@ -88,6 +88,11 @@ class DatabaseService {
       print(e.toString());
       return null;
     }
+    product.sort((a, b) {
+      String A = a['product']['product_name'].toString();
+      String B = b['product']['product_name'].toString();
+      return A.compareTo(B);
+    });
     return product;
   }
 
@@ -109,6 +114,11 @@ class DatabaseService {
       print(e.toString());
       return null;
     }
+    product.sort((a, b) {
+      String A = a['product']['product_name'].toString();
+      String B = b['product']['product_name'].toString();
+      return A.compareTo(B);
+    });
     return product;
   }
 
